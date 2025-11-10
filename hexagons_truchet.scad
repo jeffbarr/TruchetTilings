@@ -31,6 +31,7 @@
 // TODO
 /// - Arcs on half hexagons
 // - Should Arc pattern 2 be rotated, yes, add more control
+// - Separate config for corners, since borders are not a good indicator
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
 // - Option to embed arcs into hexagons instead of on top
@@ -137,11 +138,13 @@ X = 0;
 Y = 1;
 
 // Part of hexagon to render
-HEX_ALL    = 1;
-HEX_LEFT   = 2;
-HEX_RIGHT  = 3;
-HEX_TOP    = 4;
-HEX_BOTTOM = 5;
+HEX_ALL          = 1;
+HEX_LEFT         = 2;
+HEX_RIGHT        = 3;
+HEX_TOP          = 4;
+HEX_BOTTOM       = 5;
+HEX_BOTTOM_LEFT  = 6;
+HEX_BOTTOM_RIGHT = 7;
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -658,14 +661,31 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 		[-HexRadius,			0]						// D
 	];
 	
+	HexPointsBottomRight =
+	[
+		[HexRadius,				0],						// A
+		[HexRadius - (HexRadius * sin(30)),  0],		//
+		[HexRadius * cos(300), 	HexRadius * sin(300)]	// F
+	];
+	
+	HexPointsBottomLeft =
+	[
+		[-HexRadius + (HexRadius * sin(30)),   0],						//
+		[-HexRadius,			               0],						// D
+		[HexRadius * cos(240), 	               HexRadius * sin(240)]	// E
+	];
+
 	// Select points for full or partial hexagon
-	HexPoints = (HexPart == HEX_ALL)    ? HexPointsAll    :
-	            (HexPart == HEX_LEFT)   ? HexPointsLeft   :
-	            (HexPart == HEX_RIGHT)  ? HexPointsRight  :
-	            (HexPart == HEX_TOP)    ? HexPointsTop    :
-	            (HexPart == HEX_BOTTOM) ? HexPointsBottom :
+	HexPoints = (HexPart == HEX_ALL)          ? HexPointsAll         :
+	            (HexPart == HEX_LEFT)         ? HexPointsLeft        :
+	            (HexPart == HEX_RIGHT)        ? HexPointsRight       :
+	            (HexPart == HEX_TOP)          ? HexPointsTop         :
+	            (HexPart == HEX_BOTTOM)       ? HexPointsBottom      :
+	            (HexPart == HEX_BOTTOM_RIGHT) ? HexPointsBottomRight :
+	            (HexPart == HEX_BOTTOM_LEFT)  ? HexPointsBottomLeft  :
 				[];
 	
+	echo(HexPoints);
 	union()
 	{
 		// Base with optional inlaid edge
@@ -789,6 +809,14 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
+			// Add 4 values:
+			//	 On Left Edge
+			//	 On Right Edge
+			//	 On Top Edge
+			//	 On Bottom Edge
+			//
+			// And clean up the rest of the code
+			
 			if (LeftBorder && (X == 0))
 			{
 				PointY = SpaceY * Y;
@@ -828,6 +856,28 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				translate([PointX, PointY, 0])
 				{
 					RenderHexagon(HEX_TOP, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+				}
+			}
+			
+			if ((LeftBorder || TopBorder) && (X == 0) && (Y == (CountY - 2)))
+			{
+				PointY = SpaceY * (Y + 2);
+				PointX = SpaceX * (X - 1);
+
+				translate([PointX, PointY, 0])
+				{
+					RenderHexagon(HEX_BOTTOM_RIGHT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+				}
+			}
+			
+			if ((RightBorder || TopBorder) && (X == (CountX - 1)) && (Y == (CountY - 2)))
+			{
+				PointY = SpaceY * (Y + 2);
+				PointX = SpaceX * (X + 1);
+
+				translate([PointX, PointY, 0])
+				{
+					RenderHexagon(HEX_BOTTOM_LEFT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}
 			}
 		}
