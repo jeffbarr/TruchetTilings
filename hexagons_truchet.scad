@@ -5,19 +5,35 @@
 //
 
 //
+// CONFIGURATION
+//	[Hexagons] controls the size and appearance of each hexagon.
+//
+//	[Grid] controls the overall size and configuration (including random seed)
+//  of the grid of hexagons.
+//
+//	[Borders] controls the appearance of the four possible borders.
+//
+//	[Extruders] controls which extruder will be used for each type of element:
+//
+//		- TileExtruder - Body of the hexagon
+//		- ArcExtruder  - Arcs on top of hexagon
+//		- FillExtruder - Fill between arcs for patterns 3, 4, 5, and 6
+//		- EdgeExtruder - Inlaid edge of hexagon
+//
+
+//
 // BUGS
 // Right border is positioned wrong if column count is even
 // Top border does not work if row count is odd
+//
 
+//
 // TODO
-// - Arcs on half hexagons
-// - Optional very thin hexagon outline
+/// - Arcs on half hexagons
 // - Should Arc pattern 2 be rotated, yes, add more control
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
 // - Option to embed arcs into hexagons instead of on top
-// - Check in
-// - Document
 //
 
 //	Uses either one of two sets of patterns:
@@ -41,6 +57,12 @@ _ArcHeight = 0.2;
 
 // Arc width
 _ArcWidth = 0.20;
+
+// Edge height
+_EdgeHeight = 0.2;
+
+// Edge width
+_EdgeWidth = 0.1;
 
 // Truchet mode
 _TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6"]
@@ -84,6 +106,9 @@ _ArcExtruder = 2;
 
 // Fill extruder (or 0)
 _FillExtruder = 3;
+
+// Edge extruder (or 0)
+_EdgeExtruder = 0;
 
 // [Extruder to render]
 _WhichExtruder = "All"; // ["All", 1, 2, 3, 4, 5]
@@ -558,11 +583,40 @@ module RenderArc(HexRadius, HexPoints, ArcIndex, ArcWidth, ArcExtruder, FillExtr
 	}
 }
 
+// Render the base of the given full or partial hexagon to the given height
+module RenderHexagonBase(HexPoints, HexHeight)
+{
+	linear_extrude(HexHeight)
+	{
+		polygon(HexPoints);
+	}
+}
+
+// Render the edge of the given full or partial hexagon, wiht the given height and width
+module RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight)
+{
+	linear_extrude(EdgeHeight)
+	{
+		difference()
+		{
+			// Matter
+			polygon(HexPoints);
+			
+			// Anti=matter
+			offset(delta=-EdgeWidth)
+			{
+				polygon(HexPoints);
+			}
+		}
+	}
+}
+
 //
-// Render full (HexPart = HEX_ALL) or part (the other values) of a hexagon, with arcs on top as specified by ArcIndex
+// Render full (HexPart = HEX_ALL) or part (the other values) of a hexagon, with arcs on top as specified by ArcIndex, 
+// and optional (if EdgeExtruder non-zero) inlaid edge.
 //
 
-module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder)
+module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight)
 {
 	HexPointsAll = 
 	[
@@ -614,12 +668,39 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 	
 	union()
 	{
-		// Base
-		Extruder(TileExtruder)
+		// Base with optional inlaid edge
+		if (EdgeExtruder)
 		{
-			linear_extrude(HexHeight)
+			// Render the base, subtract the edge, then render the edge into the vacated space
+			union()
 			{
-				polygon(HexPoints);
+				Extruder(TileExtruder)
+				{
+					difference()
+					{
+						RenderHexagonBase(HexPoints, HexHeight);
+					
+						translate([0, 0, HexHeight - EdgeHeight])
+						{
+							RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight);
+						}
+					}
+				}
+				
+				Extruder(EdgeExtruder)
+				{
+					translate([0, 0, HexHeight - EdgeHeight])
+					{
+						RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight);
+					}	
+				}
+			}
+		}
+		else
+		{
+			Extruder(TileExtruder)
+			{
+				RenderHexagonBase(HexPoints, HexHeight);
 			}
 		}
 		
@@ -668,7 +749,7 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "3-4-5-6") ? 6 :
 	                      99;
 		
-module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder)
+module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight)
 {
 	// Select range of random numbers (and arc indexes) based on Truchet mode
 	Min = MinForTruchetMode(TruchetMode);
@@ -698,13 +779,13 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 					Rot = ((X * 2 * Y) % 6) * 60;	// This produces a very cool variation
 					rotate([0, 0, Rot])
 					{
-						RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder);
+						RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 					}
 				}
 				else
 				// Production code
 				{
-					RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder);
+					RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}
 			}
 			
@@ -715,7 +796,7 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_RIGHT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder);
+					RenderHexagon(HEX_RIGHT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}
 			}
 			
@@ -726,7 +807,7 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_LEFT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder);
+					RenderHexagon(HEX_LEFT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}					
 			}
 			
@@ -736,7 +817,7 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder);
+					RenderHexagon(HEX_BOTTOM, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}
 			}
 			
@@ -746,11 +827,11 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_TOP, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder);
+					RenderHexagon(HEX_TOP, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
 				}
 			}
 		}
 	}
 }
 
-main(_CountX, _CountY, _TruchetMode, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder);
+main(_CountX, _CountY, _TruchetMode, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight);
