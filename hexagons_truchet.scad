@@ -13,6 +13,8 @@
 //
 //	[Borders] controls the appearance of the four possible borders.
 //
+//	[Corners] controls the appearance of the four possible corners.
+//
 //	[Extruders] controls which extruder will be used for each type of element:
 //
 //		- TileExtruder - Body of the hexagon
@@ -29,13 +31,12 @@
 
 //
 // TODO
-/// - Arcs on half hexagons
+// - Option to embed arcs into hexagons instead of on top
+// - Arcs on half hexagons
 // - Should Arc pattern 2 be rotated, yes, add more control
-// - Separate config for corners, since borders are not a good indicator
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
-// - Option to embed arcs into hexagons instead of on top
-//
+// - Better way to set up all configurators for multi-piece prints
 
 //	Uses either one of two sets of patterns:
 //
@@ -94,6 +95,20 @@ _TopBorder = true;
 
 // Bottom
 _BottomBorder = true;
+
+/* [Corners] */
+
+// Bottom left
+_BottomLeftCorner = false;
+
+// Top left
+_TopLeftCorner = false;
+
+// Bottom right
+_BottomRightCorner = false;
+
+// Top right
+_TopRightCorner = false;
 
 // [Extruders]
 
@@ -769,7 +784,7 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "3-4-5-6") ? 6 :
 	                      99;
 		
-module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight)
+module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight, BottomLeftCorner, TopLeftCorner, BottomRightCorner, TopRightCorner)
 {
 	// Select range of random numbers (and arc indexes) based on Truchet mode
 	Min = MinForTruchetMode(TruchetMode);
@@ -809,15 +824,20 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
-			// Add 4 values:
-			//	 On Left Edge
-			//	 On Right Edge
-			//	 On Top Edge
-			//	 On Bottom Edge
-			//
-			// And clean up the rest of the code
+			// See if we are rendering adjacent to a border	and set flags appropriately	 	
+			AtLeftBorder   = (X == 0);
+			AtRightBorder  = (X == (CountX - 1));
+			AtBottomBorder = (Y == 0);
+			AtTopBorder    = (Y == (CountY - 2));
 			
-			if (LeftBorder && (X == 0))
+			// See if we are rendering a corner and set flags appropriately
+			AtTopLeftCorner     = AtLeftBorder  && AtTopBorder;
+			AtBottomLeftCorner  = AtLeftBorder  && AtBottomBorder;
+			AtTopRightCorner    = AtRightBorder && AtTopBorder;
+			AtBottomRightCorner = AtRightBorder && AtBottomBorder;
+			
+			// Left border and possible bottom left corner
+			if (LeftBorder && AtLeftBorder && !AtBottomLeftCorner || (AtBottomLeftCorner && BottomLeftCorner))
 			{
 				PointY = SpaceY * Y;
 				PointX = SpaceX * (X - 1);
@@ -828,7 +848,8 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
-			if (RightBorder && (X == (CountX - 1)))
+			// Right border and possible bottom right corner
+			if (RightBorder && AtRightBorder && !AtBottomRightCorner || (AtBottomRightCorner && BottomRightCorner))
 			{
 				PointY = SpaceY * Y;
 				PointX = SpaceX * (X + 1);
@@ -839,7 +860,8 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}					
 			}
 			
-			if (TopBorder && (Y == (CountY - 2)) && OddColumn)
+			// Top border
+			if (TopBorder && AtTopBorder && OddColumn)
 			{
 				PointY = SpaceY * (Y + 2);
 							
@@ -849,7 +871,8 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
-			if (BottomBorder && (Y == 0) && !OddColumn)
+			// Bottom border
+			if (BottomBorder && AtBottomBorder && !OddColumn)
 			{
 				PointY = SpaceY * (Y - 1);
 							
@@ -859,7 +882,8 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
-			if ((LeftBorder || TopBorder) && (X == 0) && (Y == (CountY - 2)))
+			// Top left corner
+			if (AtTopLeftCorner && TopLeftCorner)
 			{
 				PointY = SpaceY * (Y + 2);
 				PointX = SpaceX * (X - 1);
@@ -870,7 +894,9 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				}
 			}
 			
-			if ((RightBorder || TopBorder) && (X == (CountX - 1)) && (Y == (CountY - 2)))
+			// Top right corner
+			//if ((RightBorder || TopBorder) && AtRightBorder && AtTopBorder)
+			if (AtTopRightCorner && TopRightCorner)
 			{
 				PointY = SpaceY * (Y + 2);
 				PointX = SpaceX * (X + 1);
@@ -884,4 +910,4 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 	}
 }
 
-main(_CountX, _CountY, _TruchetMode, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight);
+main(_CountX, _CountY, _TruchetMode, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight, _BottomLeftCorner, _TopLeftCorner, _BottomRightCorner, _TopRightCorner);
