@@ -705,7 +705,6 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 	            (HexPart == HEX_BOTTOM_LEFT)  ? HexPointsBottomLeft  :
 				[];
 	
-	echo(HexPoints);
 	union()
 	{
 		// Base with optional inlaid edge
@@ -789,20 +788,22 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "3-4-5-6") ? 6 :
 	                      99;
 		
-module main(CountX, CountY, TruchetMode, Rotate2, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight, BottomLeftCorner, TopLeftCorner, BottomRightCorner, TopRightCorner)
+module main(Args)
 {
+	echo(Args);
+
 	// Select range of random numbers (and arc indexes) based on Truchet mode
-	Min = MinForTruchetMode(TruchetMode);
-	Max = MaxForTruchetMode(TruchetMode);
-	ArcIndexes = RandomIntsInRange(Min, Max, CountX * CountY, RandomSeed);
+	Min = MinForTruchetMode(Args.TruchetMode);
+	Max = MaxForTruchetMode(Args.TruchetMode);
+	ArcIndexes = RandomIntsInRange(Min, Max, Args.CountX * Args.CountY, Args.RandomSeed);
 	
 	// Compute spacing in X and Y
-	SpaceX = 1.5 * (HexRadius + Gap);
-	SpaceY = (HexRadius + Gap) / 2 * sqrt(3);
+	SpaceX = 1.5 * (Args.HexRadius + Args.Gap);
+	SpaceY = (Args.HexRadius + Args.Gap) / 2 * sqrt(3);
 	
-	for (Y = [0 : 2 : CountY - 1])
+	for (Y = [0 : 2 : Args.CountY - 1])
 	{
-		for (X = [0 : CountX - 1])
+		for (X = [0 : Args.CountX - 1])
 		{
 			OddColumn = (X % 2) == 1 ? 1 : 0;
 				
@@ -811,29 +812,29 @@ module main(CountX, CountY, TruchetMode, Rotate2, HexRadius, HexHeight, ArcHeigh
 			
 			translate([PointX, PointY, 0])
 			{
-				ArcIndex = ArcIndexes[Y * CountX + X];
+				ArcIndex = ArcIndexes[Y * Args.CountX + X];
 				
 				// Horrible hack to see if pattern 2 rotation is a good idea  (it is)
-				if (Rotate2 && (ArcIndex == 2))
+				if (Args.Rotate2 && (ArcIndex == 2))
 				{
 					Rot = ((X * 2 * Y) % 5) * 60;	// This produces a very cool variation
 					rotate([0, 0, Rot])
 					{
-						RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, Args.ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 					}
 				}
 				else
 				// Production code
 				{
-					RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, Args.ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
 			// See if we are rendering adjacent to a border	and set flags appropriately	 	
 			AtLeftBorder   = (X == 0);
-			AtRightBorder  = (X == (CountX - 1));
+			AtRightBorder  = (X == (Args.CountX - 1));
 			AtBottomBorder = (Y == 0);
-			AtTopBorder    = (Y == (CountY - 2));
+			AtTopBorder    = (Y == (Args.CountY - 2));
 			
 			// See if we are rendering a corner and set flags appropriately
 			AtTopLeftCorner     = AtLeftBorder  && AtTopBorder;
@@ -842,77 +843,104 @@ module main(CountX, CountY, TruchetMode, Rotate2, HexRadius, HexHeight, ArcHeigh
 			AtBottomRightCorner = AtRightBorder && AtBottomBorder;
 			
 			// Left border and possible bottom left corner
-			if (LeftBorder && AtLeftBorder && !AtBottomLeftCorner || (AtBottomLeftCorner && BottomLeftCorner))
+			if (Args.LeftBorder && AtLeftBorder && !AtBottomLeftCorner || (AtBottomLeftCorner && Args.BottomLeftCorner))
 			{
 				PointY = SpaceY * Y;
 				PointX = SpaceX * (X - 1);
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_RIGHT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
 			// Right border and possible bottom right corner
-			if (RightBorder && AtRightBorder && !AtBottomRightCorner || (AtBottomRightCorner && BottomRightCorner))
+			if (Args.RightBorder && AtRightBorder && !AtBottomRightCorner || (AtBottomRightCorner && Args.BottomRightCorner))
 			{
 				PointY = SpaceY * Y;
 				PointX = SpaceX * (X + 1);
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_LEFT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}					
 			}
 			
 			// Top border
-			if (TopBorder && AtTopBorder && OddColumn)
+			if (Args.TopBorder && AtTopBorder && OddColumn)
 			{
 				PointY = SpaceY * (Y + 2);
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_BOTTOM, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
 			// Bottom border
-			if (BottomBorder && AtBottomBorder && !OddColumn)
+			if (Args.BottomBorder && AtBottomBorder && !OddColumn)
 			{
 				PointY = SpaceY * (Y - 1);
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_TOP, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_TOP, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
 			// Top left corner
-			if (AtTopLeftCorner && TopLeftCorner)
+			if (AtTopLeftCorner && Args.TopLeftCorner)
 			{
 				PointY = SpaceY * (Y + 2);
 				PointX = SpaceX * (X - 1);
 
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM_RIGHT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_BOTTOM_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
 			// Top right corner
-			//if ((RightBorder || TopBorder) && AtRightBorder && AtTopBorder)
-			if (AtTopRightCorner && TopRightCorner)
+			if (AtTopRightCorner && Args.TopRightCorner)
 			{
 				PointY = SpaceY * (Y + 2);
 				PointX = SpaceX * (X + 1);
 
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM_LEFT, HexRadius, HexHeight, ArcHeight, ArcWidth, 0, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
+					RenderHexagon(HEX_BOTTOM_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 		}
 	}
 }
 
-main(_CountX, _CountY, _TruchetMode, _Rotate2, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight, _BottomLeftCorner, _TopLeftCorner, _BottomRightCorner, _TopRightCorner);
+main(object(
+			[
+				["ArcExtruder",			_ArcExtruder],
+				["ArcHeight", 			_ArcHeight],
+				["ArcWidth", 			_ArcWidth],
+				["BottomBorder",		_BottomBorder],
+				["BottomLeftCorner",	_BottomLeftCorner],
+				["BottomRightCorner",	_BottomRightCorner],
+				["CountX", 				_CountX],
+				["CountY", 				_CountY],
+				["EdgeExtruder",		_EdgeExtruder],
+				["EdgeHeight",			_EdgeHeight],
+				["EdgeWidth",			_EdgeWidth],
+				["FillExtruder",		_FillExtruder],
+				["Gap",					_Gap],
+				["HexHeight", 			_HexHeight],
+				["HexRadius", 			_HexRadius],
+				["LeftBorder",			_LeftBorder],
+				["RandomSeed",			_RandomSeed],
+				["RightBorder",			_RightBorder],
+				["Rotate2", 			_Rotate2,],
+				["TileExtruder",		_TileExtruder],
+				["TopBorder",			_TopBorder],
+				["TopLeftCorner",		_TopLeftCorner],
+				["TopRightCorner",		_TopRightCorner],
+				["TruchetMode", 		_TruchetMode]
+			]
+		)
+	);
