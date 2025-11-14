@@ -47,6 +47,7 @@
 //	Or:
 //	1 .. 6		Just one pattern
 //
+//  Can optionally rotate pattern 2 to add variety
 
 /* [Hexagons] */
 // Hexagon radius
@@ -69,6 +70,9 @@ _EdgeWidth = 0.1;
 
 // Truchet mode
 _TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6"]
+
+// Rotate pattern 2
+_Rotate2 = true;
 
 /* [Grid] */
 // Column count
@@ -785,7 +789,7 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "3-4-5-6") ? 6 :
 	                      99;
 		
-module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight, BottomLeftCorner, TopLeftCorner, BottomRightCorner, TopRightCorner)
+module main(CountX, CountY, TruchetMode, Rotate2, HexRadius, HexHeight, ArcHeight, ArcWidth, RandomSeed, Gap, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, LeftBorder, RightBorder, TopBorder, BottomBorder, EdgeWidth, EdgeHeight, BottomLeftCorner, TopLeftCorner, BottomRightCorner, TopRightCorner)
 {
 	// Select range of random numbers (and arc indexes) based on Truchet mode
 	Min = MinForTruchetMode(TruchetMode);
@@ -810,9 +814,9 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 				ArcIndex = ArcIndexes[Y * CountX + X];
 				
 				// Horrible hack to see if pattern 2 rotation is a good idea  (it is)
-				if (ArcIndex == 2)
+				if (Rotate2 && (ArcIndex == 2))
 				{
-					Rot = ((X * 2 * Y) % 6) * 60;	// This produces a very cool variation
+					Rot = ((X * 2 * Y) % 5) * 60;	// This produces a very cool variation
 					rotate([0, 0, Rot])
 					{
 						RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight);
@@ -911,4 +915,4 @@ module main(CountX, CountY, TruchetMode, HexRadius, HexHeight, ArcHeight, ArcWid
 	}
 }
 
-main(_CountX, _CountY, _TruchetMode, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight, _BottomLeftCorner, _TopLeftCorner, _BottomRightCorner, _TopRightCorner);
+main(_CountX, _CountY, _TruchetMode, _Rotate2, _HexRadius, _HexHeight, _ArcHeight, _ArcWidth, _RandomSeed, _Gap, _TileExtruder, _ArcExtruder, _FillExtruder, _EdgeExtruder, _LeftBorder, _RightBorder, _TopBorder, _BottomBorder, _EdgeWidth, _EdgeHeight, _BottomLeftCorner, _TopLeftCorner, _BottomRightCorner, _TopRightCorner);
