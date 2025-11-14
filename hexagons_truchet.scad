@@ -615,7 +615,7 @@ module RenderHexagonBase(HexPoints, HexHeight)
 	}
 }
 
-// Render the edge of the given full or partial hexagon, wiht the given height and width
+// Render the edge of the given full or partial hexagon, with the given height and width
 module RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight)
 {
 	linear_extrude(EdgeHeight)
