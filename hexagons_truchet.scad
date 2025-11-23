@@ -25,8 +25,8 @@
 
 //
 // BUGS
-// Right border is positioned wrong if column count is even
 // Top border does not work if row count is odd
+// Right border is positioned wrong if column count is even
 // Filled triad is not rendering properly, arc lines are too thin
 //
 
@@ -34,7 +34,6 @@
 // TODO
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
-// - Should Arc pattern 2 be rotated, yes, add more control
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
 // - Better way to set up all configurators for multi-piece prints
@@ -68,11 +67,19 @@ _EdgeHeight = 0.2;
 // Edge width
 _EdgeWidth = 0.1;
 
+/* [Truchet] */
 // Truchet mode
 _TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6"]
 
 // Rotate pattern 2
 _Rotate2 = true;
+
+// Rotate 2 factor
+_Rotate2Factor = 2;
+
+// Rotate 2 mod
+_Rotate2Mod = 5;
+
 
 /* [Grid] */
 // Column count
@@ -801,8 +808,8 @@ module main(Args)
 	SpaceX = 1.5 * (Args.HexRadius + Args.Gap);
 	SpaceY = (Args.HexRadius + Args.Gap) / 2 * sqrt(3);
 	
-	for (Y = [0 : 2 : Args.CountY - 1])
-	{
+	for (Y = [0 : 2 : Args.CountY])
+	{echo(Y);
 		for (X = [0 : Args.CountX - 1])
 		{
 			OddColumn = (X % 2) == 1 ? 1 : 0;
@@ -814,19 +821,19 @@ module main(Args)
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
 				
-				// Horrible hack to see if pattern 2 rotation is a good idea  (it is)
+				// Special handling for pattern 2
 				if (Args.Rotate2 && (ArcIndex == 2))
 				{
-					Rot = ((X * 2 * Y) % 5) * 60;	// This produces a very cool variation
+					Rot = ((X * Args.Rotate2Factor * Y) % Args.Rotate2Mod) * 60;
 					rotate([0, 0, Rot])
 					{
-						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, Args.ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 					}
 				}
 				else
-				// Production code
+				// All other patterns
 				{
-					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, Args.ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
 			
@@ -935,7 +942,9 @@ main(object(
 				["LeftBorder",			_LeftBorder],
 				["RandomSeed",			_RandomSeed],
 				["RightBorder",			_RightBorder],
-				["Rotate2", 			_Rotate2,],
+				["Rotate2", 			_Rotate2],
+				["Rotate2Factor",		_Rotate2Factor],
+				["Rotate2Mod",			_Rotate2Mod],
 				["TileExtruder",		_TileExtruder],
 				["TopBorder",			_TopBorder],
 				["TopLeftCorner",		_TopLeftCorner],
