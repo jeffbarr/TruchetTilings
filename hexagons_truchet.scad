@@ -32,11 +32,13 @@
 
 //
 // TODO
+// - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
 // - Better way to set up all configurators for multi-piece prints
+// - Way to map object() into a bunch of JSON that works as a config
 
 //	Uses either one of two sets of patterns:
 //
@@ -808,8 +810,8 @@ module main(Args)
 	SpaceX = 1.5 * (Args.HexRadius + Args.Gap);
 	SpaceY = (Args.HexRadius + Args.Gap) / 2 * sqrt(3);
 	
-	for (Y = [0 : 2 : Args.CountY])
-	{echo(Y);
+	for (Y = [0 : 2 : Args.CountY - 1])
+	{
 		for (X = [0 : Args.CountX - 1])
 		{
 			OddColumn = (X % 2) == 1 ? 1 : 0;
