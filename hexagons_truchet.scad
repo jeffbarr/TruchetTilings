@@ -39,8 +39,7 @@
 
 //
 // TODO
-// - Add Mat options for 1xN (K, L, and M)
-// - Copy Mat diagram from Google doc into repo
+//// - Copy Mat diagram from Google doc into repo
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -105,7 +104,7 @@ _RandomSeed = 131313;
 
 /* [Mat] */
 // Mat
-_Mat = "Manual";	// ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+_Mat = "Manual";	// ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"]
 
 /* [Borders] */
 
@@ -1132,6 +1131,52 @@ MatJ_Args =
 			]
 	);
 
+MatK_Args = 
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			true],				
+				["RightBorder",			false],
+				["TopBorder",			true],
+				["BottomBorder",		true],
+				["TopLeftCorner",		true],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatL_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			true],
+				["TopBorder",			true],
+				["BottomBorder",		true],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		true],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	true]
+			]
+	);
+
+
+MatM_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			false],
+				["TopBorder",			true],
+				["BottomBorder",		true],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	false]
+			]
+	);
+	
 MatArgs =
 	(_Mat == "Manual") ? ManualArgs :
 	(_Mat == "A")      ? MatA_Args  :
@@ -1144,6 +1189,9 @@ MatArgs =
 	(_Mat == "H")      ? MatH_Args  :
 	(_Mat == "I")      ? MatI_Args  :
 	(_Mat == "J")      ? MatJ_Args  :
+	(_Mat == "K")      ? MatK_Args  :
+	(_Mat == "L")      ? MatL_Args  :
+	(_Mat == "M")      ? MatM_Args  :
                          NULL;
  
 main(object(BaseArgs, MatArgs));
