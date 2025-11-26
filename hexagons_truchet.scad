@@ -22,6 +22,13 @@
 //		- FillExtruder - Fill between arcs for patterns 3, 4, 5, and 6
 //		- EdgeExtruder - Inlaid edge of hexagon
 //
+//	[Mat] provides an alternate way to set up borders and corners. If it 
+//	is set to "Manual" then the values in [Borders] and [Corners] apply.
+//
+//	Otherwise, the value ("A" through "J" as documented in 
+//	https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0)
+//	is used to set the borders and the corners.
+//
 
 //
 // BUGS
@@ -32,12 +39,13 @@
 
 //
 // TODO
+// - Add Mat options for 1xN (K, L, and M)
+// - Copy Mat diagram from Google doc into repo
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
 // - Way to make underlapped border to join prints together
 // - Turn all PointX/PointY calculations into calls to a pair of functions
-// - Better way to set up all configurators for multi-piece prints
 // - Way to map object() into a bunch of JSON that works as a config
 
 //	Uses either one of two sets of patterns:
@@ -82,7 +90,6 @@ _Rotate2Factor = 2;
 // Rotate 2 mod
 _Rotate2Mod = 5;
 
-
 /* [Grid] */
 // Column count
 _CountX = 10;
@@ -95,6 +102,10 @@ _Gap = 0.4;
 
 // Random seed
 _RandomSeed = 131313;
+
+/* [Mat] */
+// Mat
+_Mat = "Manual";	// ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
 /* [Borders] */
 
@@ -812,7 +823,7 @@ module main(Args)
 	
 	for (Y = [0 : 2 : Args.CountY - 1])
 	{
-		for (X = [0 : Args.CountX - 1])
+		for (X = [Args.StartX : Args.CountX - 1])
 		{
 			OddColumn = (X % 2) == 1 ? 1 : 0;
 				
@@ -924,14 +935,20 @@ module main(Args)
 	}
 }
 
-main(object(
+//
+// Gather arguments and call main:
+//
+//	BaseArgs are the arguments used regardless of _Mat
+//	ManualArgs are additional arguments if Mat is set to "Manual"
+//	MatA_Args ... MatJ_Args are used if Mat is set to "A" ... "J", respectively
+//
+
+BaseArgs = 
+	object(
 			[
 				["ArcExtruder",			_ArcExtruder],
 				["ArcHeight", 			_ArcHeight],
 				["ArcWidth", 			_ArcWidth],
-				["BottomBorder",		_BottomBorder],
-				["BottomLeftCorner",	_BottomLeftCorner],
-				["BottomRightCorner",	_BottomRightCorner],
 				["CountX", 				_CountX],
 				["CountY", 				_CountY],
 				["EdgeExtruder",		_EdgeExtruder],
@@ -941,17 +958,192 @@ main(object(
 				["Gap",					_Gap],
 				["HexHeight", 			_HexHeight],
 				["HexRadius", 			_HexRadius],
-				["LeftBorder",			_LeftBorder],
 				["RandomSeed",			_RandomSeed],
-				["RightBorder",			_RightBorder],
 				["Rotate2", 			_Rotate2],
 				["Rotate2Factor",		_Rotate2Factor],
 				["Rotate2Mod",			_Rotate2Mod],
 				["TileExtruder",		_TileExtruder],
-				["TopBorder",			_TopBorder],
-				["TopLeftCorner",		_TopLeftCorner],
-				["TopRightCorner",		_TopRightCorner],
 				["TruchetMode", 		_TruchetMode]
 			]
-		)
+		);
+
+ManualArgs =
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			_LeftBorder],				
+				["RightBorder",			_RightBorder],
+				["TopBorder",			_TopBorder],
+				["BottomBorder",		_BottomBorder],
+				["TopLeftCorner",		_TopLeftCorner],
+				["TopRightCorner",		_TopRightCorner],
+				["BottomLeftCorner",	_BottomLeftCorner],
+				["BottomRightCorner",	_BottomRightCorner]
+			]
 	);
+
+MatA_Args = 
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			true],				
+				["RightBorder",			true],
+				["TopBorder",			true],
+				["BottomBorder",		true],
+				["TopLeftCorner",		true],
+				["TopRightCorner",		true],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	true]
+			]
+	);
+		
+MatB_Args = 
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			true],				
+				["RightBorder",			false],
+				["TopBorder",			true],
+				["BottomBorder",		false],
+				["TopLeftCorner",		true],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatC_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			true],
+				["TopBorder",			true],
+				["BottomBorder",		false],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		true],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	true]
+			]
+	);
+
+MatD_Args =
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			true],				
+				["RightBorder",			false],
+				["TopBorder",			false],
+				["BottomBorder",		true],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatE_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			true],
+				["TopBorder",			false],
+				["BottomBorder",		true],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	true]
+			]
+	);
+
+MatF_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			false],
+				["TopBorder",			true],
+				["BottomBorder",		false],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatG_Args =
+	object(
+			[
+				["StartX",				0],
+				["LeftBorder",			true],				
+				["RightBorder",			false],
+				["TopBorder",			false],
+				["BottomBorder",		false],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	true],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatH_Args =
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			false],
+				["TopBorder",			false],
+				["BottomBorder",		false],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatI_Args =
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			true],
+				["TopBorder",			false],
+				["BottomBorder",		false],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	true]
+			]
+	);
+
+MatJ_Args = 
+	object(
+			[
+				["StartX",				1],
+				["LeftBorder",			false],				
+				["RightBorder",			false],
+				["TopBorder",			false],
+				["BottomBorder",		true],
+				["TopLeftCorner",		false],
+				["TopRightCorner",		false],
+				["BottomLeftCorner",	false],
+				["BottomRightCorner",	false]
+			]
+	);
+
+MatArgs =
+	(_Mat == "Manual") ? ManualArgs :
+	(_Mat == "A")      ? MatA_Args  :
+	(_Mat == "B")      ? MatB_Args  :
+	(_Mat == "C")      ? MatC_Args  :
+	(_Mat == "D")      ? MatD_Args  :
+	(_Mat == "E")      ? MatE_Args  :
+	(_Mat == "F")      ? MatF_Args  :
+	(_Mat == "G")      ? MatG_Args  :
+	(_Mat == "H")      ? MatH_Args  :
+	(_Mat == "I")      ? MatI_Args  :
+	(_Mat == "J")      ? MatJ_Args  :
+                         NULL;
+ 
+main(object(BaseArgs, MatArgs));
