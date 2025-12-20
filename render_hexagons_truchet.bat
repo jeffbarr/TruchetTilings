@@ -21,6 +21,11 @@ REM This generates up to 65 files and over 1.3 GB of STL within minutes
 REM
 REM More info:
 REM  https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0
+REM
+REM TODO:
+REM	- Accept a single parameter that maps to mat5/6/7 ...
+REM	- Add error checking
+REM 
 
 REM Path to OpenSCAD, latest nightly build since we need object()
 set OSC="C:\Program Files\OpenSCAD (Nightly)\openscad.exe"
@@ -32,13 +37,13 @@ REM File to render
 set INFILE=..\..\hexagons_truchet.scad
 
 REM Param file to use (created in OpenSCAD)
-set PARAM=..\..\mat5.json
+set PARAM=..\..\mat6.json
 
 REM Settings in param file
-SET PMAT=Mat5
+SET PMAT=Mat6
 
 REM Base name for output files
-set OUTFILE=hexagons_truchet_mat5
+set OUTFILE=hexagons_truchet_mat6
 
 echo %OSC%
 echo %BASE%
