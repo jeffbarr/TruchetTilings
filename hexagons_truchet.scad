@@ -32,14 +32,12 @@
 
 //
 // BUGS
-// Top border does not work if row count is odd
 // Right border is positioned wrong if column count is even
 // Filled triad is not rendering properly, arc lines are too thin
 //
 
 //
 // TODO
-//// - Copy Mat diagram from Google doc into repo
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -853,8 +851,9 @@ module main(Args)
 			AtLeftBorder   = (X == 0);
 			AtRightBorder  = (X == (Args.CountX - 1));
 			AtBottomBorder = (Y == 0);
-			AtTopBorder    = (Y == (Args.CountY - 2));
-			
+			AtTopBorder	   = (Y % 2) == 1 ? (Y == (Args.CountY - 2))
+			                              : (Y == (Args.CountY - 1));
+  
 			// See if we are rendering a corner and set flags appropriately
 			AtTopLeftCorner     = AtLeftBorder  && AtTopBorder;
 			AtBottomLeftCorner  = AtLeftBorder  && AtBottomBorder;
