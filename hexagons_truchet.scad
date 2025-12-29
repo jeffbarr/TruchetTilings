@@ -25,7 +25,7 @@
 //	[Mat] provides an alternate way to set up borders and corners. If it 
 //	is set to "Manual" then the values in [Borders] and [Corners] apply.
 //
-//	Otherwise, the value ("A" through "J" as documented in 
+//	Otherwise, the value ("A" through "M" as documented in 
 //	https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0)
 //	is used to set the borders and the corners.
 //
@@ -53,7 +53,7 @@
 //	Or:
 //	1 .. 6		Just one pattern
 //
-//  Can optionally rotate pattern 2 to add variety
+//  Can optionally rotate pattern 2 to add variety.
 
 /* [Hexagons] */
 // Hexagon radius
