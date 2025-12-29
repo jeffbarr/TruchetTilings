@@ -1,0 +1,18 @@
+---
+config:
+  theme: mc
+  look: neo
+---
+flowchart TD
+    main
+    main --> RenderHexagon
+    main --> RandomIntsInRange
+    main --> MinForTruchetMode
+    main --> MaxForTruchetMode
+
+    RenderHexagon --> RenderHexagonBase
+    RenderHexagon --> RenderHexagonEdge
+    RenderHexagon --> RenderArc
+
+    RenderArc --> RenderRing
+    RenderArc --> RenderLine
