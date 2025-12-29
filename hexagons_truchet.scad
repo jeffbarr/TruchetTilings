@@ -39,7 +39,6 @@
 
 //
 // TODO
-//// - Copy Mat diagram from Google doc into repo
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
