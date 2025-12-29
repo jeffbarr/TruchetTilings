@@ -43,7 +43,6 @@
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
 // - Way to make underlapped border to join prints together
-// - Turn all PointX/PointY calculations into calls to a pair of functions
 // - Way to map object() into a bunch of JSON that works as a config
 
 //	Uses either one of two sets of patterns:
@@ -805,7 +804,10 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "1-2")     ? 2 :
 	(Mode == "3-4-5-6") ? 6 :
 	                      99;
-		
+
+function GetPointX(SpaceX, X) = (SpaceX * X);
+function GetPointY(SpaceY, Y) = (SpaceY * Y);
+
 module main(Args)
 {
 	echo(Args);
@@ -825,8 +827,8 @@ module main(Args)
 		{
 			OddColumn = (X % 2) == 1 ? 1 : 0;
 				
-			PointX = SpaceX * X;
-			PointY = SpaceY * (OddColumn ? Y : Y + 1);
+			PointX = GetPointX(SpaceX, X);
+			PointY = GetPointY(SpaceY, (OddColumn ? Y : Y + 1));
 			
 			translate([PointX, PointY, 0])
 			{
@@ -863,8 +865,8 @@ module main(Args)
 			// Left border and possible bottom left corner
 			if (Args.LeftBorder && AtLeftBorder && !AtBottomLeftCorner || (AtBottomLeftCorner && Args.BottomLeftCorner))
 			{
-				PointY = SpaceY * Y;
-				PointX = SpaceX * (X - 1);
+				PointX = GetPointX(SpaceX, X - 1);
+				PointY = GetPointY(SpaceY, Y);
 				
 				translate([PointX, PointY, 0])
 				{
@@ -875,8 +877,8 @@ module main(Args)
 			// Right border and possible bottom right corner
 			if (Args.RightBorder && AtRightBorder && !AtBottomRightCorner || (AtBottomRightCorner && Args.BottomRightCorner))
 			{
-				PointY = SpaceY * Y;
-				PointX = SpaceX * (X + 1);
+				PointY = GetPointY(SpaceY, Y);
+				PointX = GetPointX(SpaceX, X + 1);
 				
 				translate([PointX, PointY, 0])
 				{
@@ -887,7 +889,7 @@ module main(Args)
 			// Top border
 			if (Args.TopBorder && AtTopBorder && OddColumn)
 			{
-				PointY = SpaceY * (Y + 2);
+				PointY = GetPointY(SpaceY, Y + 2);
 							
 				translate([PointX, PointY, 0])
 				{
@@ -898,7 +900,7 @@ module main(Args)
 			// Bottom border
 			if (Args.BottomBorder && AtBottomBorder && !OddColumn)
 			{
-				PointY = SpaceY * (Y - 1);
+				PointY = GetPointY(SpaceY, Y - 1);
 							
 				translate([PointX, PointY, 0])
 				{
@@ -909,8 +911,8 @@ module main(Args)
 			// Top left corner
 			if (AtTopLeftCorner && Args.TopLeftCorner)
 			{
-				PointY = SpaceY * (Y + 2);
-				PointX = SpaceX * (X - 1);
+				PointX = GetPointX(SpaceX, X - 1);
+				PointY = GetPointY(SpaceY, Y + 2);
 
 				translate([PointX, PointY, 0])
 				{
@@ -921,8 +923,8 @@ module main(Args)
 			// Top right corner
 			if (AtTopRightCorner && Args.TopRightCorner)
 			{
-				PointY = SpaceY * (Y + 2);
-				PointX = SpaceX * (X + 1);
+				PointX = GetPointX(SpaceX, X + 1);
+				PointY = GetPointY(SpaceY, Y + 2);
 
 				translate([PointX, PointY, 0])
 				{
