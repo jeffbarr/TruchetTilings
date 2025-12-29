@@ -821,6 +821,7 @@ module main(Args)
 	SpaceX = 1.5 * (Args.HexRadius + Args.Gap);
 	SpaceY = (Args.HexRadius + Args.Gap) / 2 * sqrt(3);
 	
+	// Render grid of hexagons
 	for (Y = [0 : 2 : Args.CountY - 1])
 	{
 		for (X = [Args.StartX : Args.CountX - 1])
@@ -849,6 +850,15 @@ module main(Args)
 					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
 				}
 			}
+		}
+	}
+	
+	// Render border around grid of hexagons
+	for (Y = [0 : 2 : Args.CountY - 1])
+	{
+		for (X = [Args.StartX : Args.CountX - 1])
+		{
+			OddColumn = (X % 2) == 1 ? 1 : 0;
 			
 			// See if we are rendering adjacent to a border	and set flags appropriately	 	
 			AtLeftBorder   = (X == 0);
@@ -877,8 +887,8 @@ module main(Args)
 			// Right border and possible bottom right corner
 			if (Args.RightBorder && AtRightBorder && !AtBottomRightCorner || (AtBottomRightCorner && Args.BottomRightCorner))
 			{
-				PointY = GetPointY(SpaceY, Y);
 				PointX = GetPointX(SpaceX, X + 1);
+				PointY = GetPointY(SpaceY, Y);
 				
 				translate([PointX, PointY, 0])
 				{
@@ -889,6 +899,7 @@ module main(Args)
 			// Top border
 			if (Args.TopBorder && AtTopBorder && OddColumn)
 			{
+				PointX = GetPointX(SpaceX, X);
 				PointY = GetPointY(SpaceY, Y + 2);
 							
 				translate([PointX, PointY, 0])
@@ -900,6 +911,7 @@ module main(Args)
 			// Bottom border
 			if (Args.BottomBorder && AtBottomBorder && !OddColumn)
 			{
+				PointX = GetPointX(SpaceX, X);
 				PointY = GetPointY(SpaceY, Y - 1);
 							
 				translate([PointX, PointY, 0])
