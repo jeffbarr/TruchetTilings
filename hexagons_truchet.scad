@@ -29,12 +29,20 @@
 //	https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0)
 //	is used to set the borders and the corners.
 //
-
+//	Uses either one of two sets of patterns:
 //
+//	1-2			One line per hexagon side
+//	3-4-5-6		Three lines per hexagon side
+//
+//	Or:
+//	1 .. 6		Just one pattern
+//
+//  Can optionally rotate pattern 2 to add variety (Rotate2*).
+//
+
 // BUGS
 // Top border does not work if row count is odd
 // Right border is positioned wrong if column count is even
-// Filled triad is not rendering properly, arc lines are too thin
 //
 
 //
@@ -44,16 +52,7 @@
 // - Arcs on half hexagons
 // - Way to make underlapped border to join prints together
 // - Way to map object() into a bunch of JSON that works as a config
-
-//	Uses either one of two sets of patterns:
 //
-//	1-2			One line per hexagon side
-//	3-4-5-6		Three lines per hexagon side
-//
-//	Or:
-//	1 .. 6		Just one pattern
-//
-//  Can optionally rotate pattern 2 to add variety.
 
 /* [Hexagons] */
 // Hexagon radius
