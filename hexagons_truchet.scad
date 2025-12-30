@@ -49,6 +49,7 @@
 
 //
 // TODO
+// - Use smaller font for labels
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -660,8 +661,8 @@ module RenderHexagonLabel(X, Y, Height)
 {
 	linear_extrude(Height)
 	{
-		Label = str("[", X, ",", Y, "]");
-		text(text=Label, size=12, halign="center", valign="center");
+		Label = str(X, ",", Y);
+		text(text=Label, size=8, halign="center", valign="center");
 	}
 }
 
