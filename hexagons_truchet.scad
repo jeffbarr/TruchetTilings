@@ -39,6 +39,8 @@
 //
 //  Can optionally rotate pattern 2 to add variety (Rotate2*).
 //
+//  Can optionally add embedded XY labels to each hexagon, rendered using the EdgeExtruder.
+//
 
 // BUGS
 // Top border does not work if row count is odd
@@ -72,6 +74,9 @@ _EdgeHeight = 0.2;
 
 // Edge width
 _EdgeWidth = 0.1;
+
+// XY Labels
+_XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
@@ -650,12 +655,23 @@ module RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight)
 	}
 }
 
+// Render an (X, Y) label with the given height
+module RenderHexagonLabel(X, Y, Height)
+{
+	linear_extrude(Height)
+	{
+		Label = str("[", X, ",", Y, "]");
+		text(text=Label, size=12, halign="center", valign="center");
+	}
+}
+
 //
 // Render full (HexPart = HEX_ALL) or part (the other values) of a hexagon, with arcs on top as specified by ArcIndex, 
-// and optional (if EdgeExtruder non-zero) inlaid edge.
+// optional (if EdgeExtruder non-zero) inlaid edge, and optional (if XYLabel true) embedded XY coordinate label using
+// EdgeExtruder.
 //
 
-module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight)
+module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y)
 {
 	HexPointsAll = 
 	[
@@ -738,6 +754,11 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 						translate([0, 0, HexHeight - EdgeHeight])
 						{
 							RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight);
+							
+							if (XYLabel)
+							{
+								RenderHexagonLabel(X, Y, EdgeHeight);
+							}
 						}
 					}
 				}
@@ -747,6 +768,11 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 					translate([0, 0, HexHeight - EdgeHeight])
 					{
 						RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight);
+						
+						if (XYLabel)
+						{
+							RenderHexagonLabel(X, Y, EdgeHeight);
+						}
 					}	
 				}
 			}
@@ -840,13 +866,13 @@ module main(Args)
 					Rot = ((X * Args.Rotate2Factor * Y) % Args.Rotate2Mod) * 60;
 					rotate([0, 0, Rot])
 					{
-						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y);
 					}
 				}
 				else
 				// All other patterns
 				{
-					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y);
 				}
 			}
 		}
@@ -879,7 +905,7 @@ module main(Args)
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}
 			}
 			
@@ -891,7 +917,7 @@ module main(Args)
 				
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}					
 			}
 			
@@ -903,7 +929,7 @@ module main(Args)
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_BOTTOM, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}
 			}
 			
@@ -915,7 +941,7 @@ module main(Args)
 							
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_TOP, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_TOP, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}
 			}
 			
@@ -927,7 +953,7 @@ module main(Args)
 
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_BOTTOM_RIGHT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}
 			}
 			
@@ -939,7 +965,7 @@ module main(Args)
 
 				translate([PointX, PointY, 0])
 				{
-					RenderHexagon(HEX_BOTTOM_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight);
+					RenderHexagon(HEX_BOTTOM_LEFT, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, 0, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, false, 0, 0);
 				}
 			}
 		}
@@ -974,7 +1000,8 @@ BaseArgs =
 				["Rotate2Factor",		_Rotate2Factor],
 				["Rotate2Mod",			_Rotate2Mod],
 				["TileExtruder",		_TileExtruder],
-				["TruchetMode", 		_TruchetMode]
+				["TruchetMode", 		_TruchetMode],
+				["XYLabels",		    _XYLabels]
 			]
 		);
 
