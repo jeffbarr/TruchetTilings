@@ -199,19 +199,26 @@ HEX_BOTTOM_RIGHT = 7;
 //
 //	[dx, dy] 		- x and y delta (in grid units) from starting position
 //	[ArcIndex]	 	- Index of arc
-//	[Rotate]		- Degrees to rotate arc / hexagon
+//	[Rotate]		- Amount (to be multiplied by 60) to rotate arc / hexagon
 //
 
 CircledTriadHexagons =
 [
-	[[0, 0], 5, 120],
-	[[1, 0], 5,   0],
-	[[2, 0], 5,  60],
-    [[2, 2], 5, 120],
-    [[1, 4], 5,   0],
-    [[0, 2], 5,  60],
-    [[1, 2], 4,   0]
+	[[0, 0], 6, 0],
+	[[1, 0], 6, 1],
+	[[2, 0], 6, 2],
+    [[2, 2], 6, 0],
+    [[1, 4], 6, 0],
+    [[0, 2], 6, 2],
+    [[1, 2], 4, 0],
+	[[3, 0], 4, 1],
+	[[3, 2], 6, 1],
+	[[3, 4], 4, 0]
 ];
+
+// Determine if TruchetMode represents a pattern
+function TruchetModeIsPattern(Mode) =
+	(Mode == "CircledTriad") ? true : false;
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -830,28 +837,61 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 	}
 }
 
+
+// Figure out rotation for a pattern, X and Y must be modulo the X and Y size of the pattern.
+// TruchetMode is ignored until there's more than one pattern. 
+
+function PatternRotation(TruchetMode, X, Y) =
+	(
+ [for (Hex = CircledTriadHexagons) if (Hex[0][0] == X && Hex[0][1] == Y) Hex[2]] [0]
+	);
+	
+// Figure out arc index for a pattern, X and TY must be modulo the X and Y size of the pattern.
+// TruchetMode is ignored until there's more than one pattern.
 //
+
+function PatternArcIndex(TruchetMode, X, Y) =
+	(
+ [for (Hex = CircledTriadHexagons) if (Hex[0][0] == X && Hex[0][1] == Y) Hex[1]] [0]
+	);
+	
+//	
 // Make final decisions about hexagon rendering, then call RenderHexagon to do the actual
 // rendering.
 //
 
-
-module RenderHexagonMain(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate2, Rotate2Mod, Rotate2Factor)
+module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate2, Rotate2Mod, Rotate2Factor)
 {
-	// Special handling for pattern 2
-	echo(Rotate2);
-	if (Rotate2 && (ArcIndex == 2))
+	//
+	// Decide on rotation for the hexagon:
+	//
+	//	- For patterns, the relevant (as indexed by X and Y module pattern size) element of the pattern
+	//	  determines the rotation. If the rotation returned by function PatternRotation is undefined,
+	//	  then there is no hexagon in the pattern at that X, Y.
+	//
+	//	- For ArcIndex 2, if Rotate2 is set, a function of Roate2Factor and Rotate2Mod determines rotation.
+	//
+	//	- Default is 0 for all ArcIndexs (1-6).
+	//
+	
+	// TODO make 4 and 3 into params of the pattern
+	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % 4, Y % 4)    :
+          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60) :
+		  0;
+
+	//
+	// Decide on arc index for the hexagon:
+	//
+
+	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % 4, Y % 4) :
+	                                                    ArcIndex;
+														 
+	if (!is_undef(Rot))
 	{
-		Rot = ((X * Rotate2Factor * Y) % Rotate2Mod) * 60;
-		rotate([0, 0, Rot])
+		rotate([0, 0, Rot * 60])
 		{
-			RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y);
+			RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, FinalArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y);
 		}
-	}
-	else
-	// All other patterns
-	{
-		RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y);
 	}
 }
 
@@ -911,7 +951,7 @@ module main(Args)
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
 				
-				RenderHexagonMain(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate2, Args.Rotate2Factor, Args.Rotate2Mod);
+				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate2, Args.Rotate2Factor, Args.Rotate2Mod);
 			}
 		}
 	}
