@@ -5,10 +5,12 @@ config:
 ---
 flowchart TD
     main
-    main --> RenderHexagon
+    main --> RenderHexagonMain
     main --> RandomIntsInRange
     main --> MinForTruchetMode
     main --> MaxForTruchetMode
+
+    RenderHexagonMain --> RenderHexagon
 
     RenderHexagon --> RenderHexagonBase
     RenderHexagon --> RenderHexagonEdge
