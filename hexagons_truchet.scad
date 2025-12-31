@@ -29,17 +29,24 @@
 //	https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0)
 //	is used to set the borders and the corners.
 //
-//	Uses either one of two sets of patterns:
+//	Uses any one of three sets/types of patterns:
 //
 //	1-2			One line per hexagon side
 //	3-4-5-6		Three lines per hexagon side
 //
 //	Or:
+//
 //	1 .. 6		Just one pattern
 //
-//  Can optionally rotate pattern 2 to add variety (Rotate2*).
+//  Or:
 //
-//  Can optionally add embedded XY labels to each hexagon, rendered using the EdgeExtruder.
+//  CircledTriad - A triad (4) surrounded by a circle (5, in various rotations).
+//
+//  Optional goodies:
+//
+//  - Rotate pattern 2 to add variety (Rotate2*).
+//
+//  - Add embedded XY labels to each hexagon, rendered using the EdgeExtruder.
 //
 
 // BUGS
@@ -80,7 +87,7 @@ _XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
-_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6"]
+_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad"]
 
 // Rotate pattern 2
 _Rotate2 = true;
@@ -186,6 +193,25 @@ HEX_TOP          = 4;
 HEX_BOTTOM       = 5;
 HEX_BOTTOM_LEFT  = 6;
 HEX_BOTTOM_RIGHT = 7;
+
+//
+// List of hexagons for the CircledTriad pattern, each one looks like:
+//
+//	[dx, dy] 		- x and y delta (in grid units) from starting position
+//	[ArcIndex]	 	- Index of arc
+//	[Rotate]		- Degrees to rotate arc / hexagon
+//
+
+CircledTriadHexagons =
+[
+	[[0, 0], 5, 120],
+	[[1, 0], 5,   0],
+	[[2, 0], 5,  60],
+    [[2, 2], 5, 120],
+    [[1, 4], 5,   0],
+    [[0, 2], 5,  60],
+    [[1, 2], 4,   0]
+];
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -804,6 +830,31 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 	}
 }
 
+//
+// Make final decisions about hexagon rendering, then call RenderHexagon to do the actual
+// rendering.
+//
+
+
+module RenderHexagonMain(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate2, Rotate2Mod, Rotate2Factor)
+{
+	// Special handling for pattern 2
+	echo(Rotate2);
+	if (Rotate2 && (ArcIndex == 2))
+	{
+		Rot = ((X * Rotate2Factor * Y) % Rotate2Mod) * 60;
+		rotate([0, 0, Rot])
+		{
+			RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y);
+		}
+	}
+	else
+	// All other patterns
+	{
+		RenderHexagon(HEX_ALL, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y);
+	}
+}
+
 function RandomIntsInRange(Minimum, Maximum, Count, Seed) =
     let(floats = rands(Minimum, Maximum + 1, Count, Seed))
     [ for (f = floats) floor(f) ];
@@ -860,20 +911,7 @@ module main(Args)
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
 				
-				// Special handling for pattern 2
-				if (Args.Rotate2 && (ArcIndex == 2))
-				{
-					Rot = ((X * Args.Rotate2Factor * Y) % Args.Rotate2Mod) * 60;
-					rotate([0, 0, Rot])
-					{
-						RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y);
-					}
-				}
-				else
-				// All other patterns
-				{
-					RenderHexagon(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y);
-				}
+				RenderHexagonMain(HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate2, Args.Rotate2Factor, Args.Rotate2Mod);
 			}
 		}
 	}
