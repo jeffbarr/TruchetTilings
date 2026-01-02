@@ -9,8 +9,13 @@ flowchart TD
     main --> RandomIntsInRange
     main --> MinForTruchetMode
     main --> MaxForTruchetMode
+    main --> GetPointX
+    main --> GetPointY
 
     RenderHexagonMain --> RenderHexagon
+    RenderHexagonMain --> TruchetModeIsPattern
+    RenderHexagonMain --> PatternRotation
+    RenderHexagonMain --> PatternArcIndex
 
     RenderHexagon --> RenderHexagonBase
     RenderHexagon --> RenderHexagonEdge
