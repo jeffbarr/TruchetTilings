@@ -56,6 +56,9 @@
 
 //
 // TODO
+// - Rename CircledTriad to CircledTriadPattern
+// - Generalize to use more than one pattern
+// - Figure out and document rules for shape of a pattern
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -198,11 +201,11 @@ HEX_BOTTOM_RIGHT = 7;
 // List of hexagons for the CircledTriad pattern, each one looks like:
 //
 //	[dx, dy] 		- x and y delta (in grid units) from starting position
-//	[ArcIndex]	 	- Index of arc
-//	[Rotate]		- Amount (to be multiplied by 60) to rotate arc / hexagon
+//	ArcIndex	 	- Index of arc
+//	Rotate			- Amount (to be multiplied by 60) to rotate arc / hexagon
 //
 
-CircledTriadHexagons =
+CircledTriadHexagonList =
 [
 	[[0, 0], 6, 0],
 	[[1, 0], 6, 1],
@@ -216,6 +219,22 @@ CircledTriadHexagons =
 	[[3, 4], 4, 0]
 ];
 
+//
+// Object representing the CircledTriad:
+//
+//	Hexagons		- List of hexagons, arc indexes, and rotations
+//	ModuloX			- Modulo X, indicating repeat in X direction
+//	ModuloY			- Modulo Y, indicating repeat in Y direction
+
+CircledTriad =
+object(
+	[
+		["Hexagons",	CircledTriadHexagonList],
+		["ModuloX",     4],
+		["ModuloY",		4]
+	]
+);
+	
 // Determine if TruchetMode represents a pattern
 function TruchetModeIsPattern(Mode) =
 	(Mode == "CircledTriad") ? true : false;
@@ -839,22 +858,23 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 
 
 // Figure out rotation for a pattern, X and Y must be modulo the X and Y size of the pattern.
-// TruchetMode is ignored until there's more than one pattern. 
+// TruchetMode is ignored until there's more than one pattern. Note that [0][0] and [0][1] are
+// [dx, dy] from the CircledTriadHexagons. This should be updated to use object fields.
 
 function PatternRotation(TruchetMode, X, Y) =
 	(
- [for (Hex = CircledTriadHexagons) if (Hex[0][0] == X && Hex[0][1] == Y) Hex[2]] [0]
+ [for (HexXY = CircledTriad.Hexagons) if (HexXY[0][0] == X && HexXY[0][1] == Y) HexXY[2]] [0]
 	);
 	
-// Figure out arc index for a pattern, X and TY must be modulo the X and Y size of the pattern.
+// Figure out arc index for a pattern, X and Y must be modulo the X and Y size of the pattern.
 // TruchetMode is ignored until there's more than one pattern.
 //
 
 function PatternArcIndex(TruchetMode, X, Y) =
 	(
- [for (Hex = CircledTriadHexagons) if (Hex[0][0] == X && Hex[0][1] == Y) Hex[1]] [0]
+ [for (HexXY = CircledTriad.Hexagons) if (HexXY[0][0] == X && HexXY[0][1] == Y) HexXY[1]] [0]
 	);
-	
+
 //	
 // Make final decisions about hexagon rendering, then call RenderHexagon to do the actual
 // rendering.
@@ -865,7 +885,7 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//
 	// Decide on rotation for the hexagon:
 	//
-	//	- For patterns, the relevant (as indexed by X and Y module pattern size) element of the pattern
+	//	- For patterns, the relevant (as indexed by X and Y modulo pattern size) element of the pattern
 	//	  determines the rotation. If the rotation returned by function PatternRotation is undefined,
 	//	  then there is no hexagon in the pattern at that X, Y.
 	//
@@ -873,17 +893,16 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//
 	//	- Default is 0 for all ArcIndexs (1-6).
 	//
-	
-	// TODO make 4 and 3 into params of the pattern
-	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % 4, Y % 4)    :
-          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60) :
+
+	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX)    :
+          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60)                                                     :
 		  0;
 
 	//
 	// Decide on arc index for the hexagon:
 	//
 
-	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % 4, Y % 4) :
+	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloY) :
 	                                                    ArcIndex;
 														 
 	if (!is_undef(Rot))
