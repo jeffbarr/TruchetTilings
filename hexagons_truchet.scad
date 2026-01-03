@@ -59,6 +59,9 @@
 // - Rename CircledTriad to CircledTriadPattern
 // - Generalize to use more than one pattern
 // - Figure out and document rules for shape of a pattern
+//   Must be rectangular
+//   Must self-repeat at all edges
+// - Add X/Y start params that will affect "wrap" / "mod" of patterns for mats
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -889,13 +892,13 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//	  determines the rotation. If the rotation returned by function PatternRotation is undefined,
 	//	  then there is no hexagon in the pattern at that X, Y.
 	//
-	//	- For ArcIndex 2, if Rotate2 is set, a function of Roate2Factor and Rotate2Mod determines rotation.
+	//	- For ArcIndex 2, if Rotate2 is set, a function of Rotate2Factor and Rotate2Mod determines rotation.
 	//
 	//	- Default is 0 for all ArcIndexs (1-6).
 	//
 
 	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX)    :
-          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60)                                                     :
+          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60)                                       :
 		  0;
 
 	//
@@ -965,7 +968,7 @@ module main(Args)
 				
 			PointX = GetPointX(SpaceX, X);
 			PointY = GetPointY(SpaceY, (OddColumn ? Y : Y + 1));
-			
+
 			translate([PointX, PointY, 0])
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
