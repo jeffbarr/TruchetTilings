@@ -44,7 +44,7 @@
 //
 //  Optional goodies:
 //
-//  - Rotate pattern 2 to add variety (Rotate2*).
+//  - Rotate pattern to add variety (only has a visible effect on 2, 5, and 6).
 //
 //  - Add embedded XY labels to each hexagon, rendered using the EdgeExtruder.
 //
@@ -95,14 +95,14 @@ _XYLabels = false;
 // Truchet mode
 _TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad"]
 
-// Rotate pattern 2
-_Rotate2 = true;
+// Rotate pattern
+_Rotate = true;
 
-// Rotate 2 factor
-_Rotate2Factor = 2;
+// Rotate factor
+_RotateFactor = 2;
 
-// Rotate 2 mod
-_Rotate2Mod = 5;
+// Rotate mod
+_RotateMod = 5;
 
 /* [Grid] */
 // Column count
@@ -881,7 +881,7 @@ function PatternArcIndex(TruchetMode, X, Y) =
 // rendering.
 //
 
-module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate2, Rotate2Mod, Rotate2Factor)
+module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate, RotateMod, RotateFactor)
 {
 	//
 	// Decide on rotation for the hexagon:
@@ -890,13 +890,13 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//	  determines the rotation. If the rotation returned by function PatternRotation is undefined,
 	//	  then there is no hexagon in the pattern at that X, Y.
 	//
-	//	- For ArcIndex 2, if Rotate2 is set, a function of Rotate2Factor and Rotate2Mod determines rotation.
+	//	- If Rotate is set, a function of RotateFactor and RotateMod determines rotation.
 	//
 	//	- Default is 0 for all ArcIndexs (1-6).
 	//
 
-	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX)    :
-          (Rotate2 && (ArcIndex == 2))      ? (((X * Rotate2Factor * Y) % Rotate2Mod) * 60)                                       :
+	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX) :
+          Rotate                            ? ((X * RotateFactor * Y) % RotateMod)                                             :
 		  0;
 
 	//
@@ -906,7 +906,7 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloY) :
 	                                                    ArcIndex;
 														 
-	if (!is_undef(Rot))
+	echo(Rotate,RotateFactor,RotateMod);if (!is_undef(Rot))
 	{
 		rotate([0, 0, Rot * 60])
 		{
@@ -971,7 +971,7 @@ module main(Args)
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
 				
-				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate2, Args.Rotate2Factor, Args.Rotate2Mod);
+				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate, Args.RotateFactor, Args.RotateMod);
 			}
 		}
 	}
@@ -1094,9 +1094,9 @@ BaseArgs =
 				["HexHeight", 			_HexHeight],
 				["HexRadius", 			_HexRadius],
 				["RandomSeed",			_RandomSeed],
-				["Rotate2", 			_Rotate2],
-				["Rotate2Factor",		_Rotate2Factor],
-				["Rotate2Mod",			_Rotate2Mod],
+				["Rotate", 				_Rotate],
+				["RotateFactor",		_RotateFactor],
+				["RotateMod",			_RotateMod],
 				["TileExtruder",		_TileExtruder],
 				["TruchetMode", 		_TruchetMode],
 				["XYLabels",		    _XYLabels]
