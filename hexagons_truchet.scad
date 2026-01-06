@@ -3,6 +3,9 @@
 // "Generalizations of Truchet Tiles" 
 // https://archive.bridgesmathart.org/2020/bridges2020-191.html
 //
+// This code runs only on nightly builds of OpenSCAD with the 
+// object() function enabled.
+//
 
 //
 // CONFIGURATION
@@ -26,7 +29,7 @@
 //	is set to "Manual" then the values in [Borders] and [Corners] apply.
 //
 //	Otherwise, the value ("A" through "M" as documented in 
-//	https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0)
+//	https://github.com/jeffbarr/TruchetTilings/blob/main/tiling_mats.png
 //	is used to set the borders and the corners.
 //
 //	Uses any one of three sets/types of patterns:
@@ -859,7 +862,7 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 
 
 // Figure out rotation for a pattern, X and Y must be modulo the X and Y size of the pattern.
-// TruchetMode is ignored until there's more than one pattern. Note that [0][0] and [0][1] are
+// TruchetMode is ignored [for now] until there's more than one pattern. Note that [0][0] and [0][1] are
 // [dx, dy] from the CircledTriadHexagons. This should be updated to use object fields.
 
 function PatternRotation(TruchetMode, X, Y) =
@@ -868,7 +871,7 @@ function PatternRotation(TruchetMode, X, Y) =
 	);
 	
 // Figure out arc index for a pattern, X and Y must be modulo the X and Y size of the pattern.
-// TruchetMode is ignored until there's more than one pattern.
+// TruchetMode is ignored [for now] until there's more than one pattern.
 //
 
 function PatternArcIndex(TruchetMode, X, Y) =
