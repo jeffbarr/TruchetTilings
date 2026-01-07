@@ -39,7 +39,31 @@ Download [hexagons_truchet.scad](hexagons_truchet.scad) and open it in OpenSCAD.
 
 Now spend the next hour or two experimenting with the various options in the Customizer. When you are ready to create some STL files and slice them for printing, refer to the next section.
 
+# Saving, Loading, and Slicing a Grid
+
 **Important Sanity Tip**: Before you get too far into this rat-hole, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
+
+After you have designed the grid of your dreams, you are ready to render, save, slice, and print it. To do this you use the **WhichExtruder** item in the Customizer:
+
+![Customizer WhichExtruder](Images/openscad_ht_extruder_choice.jpg)
+
+Set it to 1, press F6 (Render), wait for the render to finish, then press F7 to save the STL. Repeat this for each extruder. You will end up with four (at most) STL files. 
+
+Now go to your slicer and open all four of the STL files at the same time:
+
+![Open 4 files in Slicer](Images/open_stls_four.jpg)
+
+If you are using PrusaSlicer, answer Yes to this question:
+
+![Load Multiple](Images/prusaslicer_multi_load.jpg)
+
+This will assign a unique extruder to each of the STL files:
+
+![Extruders Assigned](Images/ht_573_extruders.jpg)
+
+Slice, choose some amazing colors, and print!
+
+Here is the overall flow:
 
 ```mermaid
 flowchart LR
@@ -65,7 +89,6 @@ flowchart LR
     GCODE --> Printer
 ```
 
-# Saving a Grid
 
 # Options
 
