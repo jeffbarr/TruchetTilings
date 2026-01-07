@@ -39,7 +39,7 @@ Download [hexagons_truchet.scad](hexagons_truchet.scad) and open it in OpenSCAD.
 
 Now spend the next hour or two experimenting with the various options in the Customizer. When you are ready to create some STL files and slice them for printing, refer to the next section.
 
-One quick note: Before you get too far into this rat-hole, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
+**Important Sanity Tip**: Before you get too far into this rat-hole, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
 
 TODO: Add a Mermaid diagram.
 
