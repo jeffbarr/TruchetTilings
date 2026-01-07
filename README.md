@@ -62,6 +62,7 @@ flowchart LR
     E4 --> Slicer
 
     Slicer --> GCODE
+    GCODE --> Printer
 ```
 
 # Saving a Grid
