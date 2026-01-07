@@ -35,13 +35,34 @@ Install the [latest nightly build](https://openscad.org/downloads.html#snapshots
 
 ![OpenSCAD Features Preferences](Images/openscad_prefs.jpg)
 
-Download [hexagons_truchet.scad](hexagons_truchet.scad) and open it in OpenSCAD. Make sure that the OpenSCAD Customizer is visible, and you are good to go. Simply make a change in the Customizer wait a second, and the display will update.
+Download [hexagons_truchet.scad](hexagons_truchet.scad) and open it in OpenSCAD. Make sure that the OpenSCAD [Customizer](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Customizer) is visible, and you are good to go. Simply make a change in the Customizer wait a second, and the display will update.
 
 Now spend the next hour or two experimenting with the various options in the Customizer. When you are ready to create some STL files and slice them for printing, refer to the next section.
 
 **Important Sanity Tip**: Before you get too far into this rat-hole, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
 
-TODO: Add a Mermaid diagram.
+```mermaid
+flowchart LR
+    A[Configuration]
+    O[OpenSCAD]
+    E1[Extruder 1 STL]
+    E2[Extruder 2 STL]
+    E3[Extruder 3 STL]
+    E4[Extruder 4 STL]
+
+    A --> O
+    O --> |F6/F7| E1
+    O --> |F6/F7| E2
+    O --> |F6/F7| E3
+    O --> |F6/F7| E4
+
+    E1 --> Slicer
+    E2 --> Slicer
+    E3 --> Slicer
+    E4 --> Slicer
+
+    Slicer --> GCODE
+```
 
 # Saving a Grid
 
