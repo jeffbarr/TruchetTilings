@@ -94,6 +94,26 @@ flowchart LR
 
 # Options
 
+## Hexagons
+
+![Hexagon Customizer Options](Images/cust_hexagons.jpg)
+
+## Truchet
+
+![Truchet Customizer Options](Images/cust_truchet.jpg)
+
+## Grid
+
+![Grid Customizer Options](Images/cust_grid.jpg)
+
+## Mat / Borders / Corners
+
+![Mat Border Corner Customizer Options](Images/cust_mat_borders_corners.jpg)
+
+## Extruders
+
+![Extruder Options](Images/cust_extruders.jpg)
+
 # Creating Multi-Print Mats
 
 # Tools
