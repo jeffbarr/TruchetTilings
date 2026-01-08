@@ -94,25 +94,72 @@ flowchart LR
 
 # Options
 
+This section contains a description of each of the items in the Customizer. Once you start using this program in "production mode" and you need to be able to repeat and recall settings on demand, use OpenSCAD's preset menu (if you can figure out how it works :-)), take a screen shot of the Customizer, or capture this line in the Console output:
+
+```
+ECHO: { ArcExtruder = 2; ArcHeight = 0.2; ArcWidth = 1.4; CountX = 14; CountY = 17; EdgeExtruder = 4; EdgeHeight = 0.2; EdgeWidth = 1.2; FillExtruder = 3; Gap = 0; HexHeight = 0.4; HexRadius = 13; RandomSeed = 131313; Rotate = true; RotateFactor = 4; RotateMod = 3; TileExtruder = 1; TruchetMode = "5"; XYLabels = false; StartX = 0; LeftBorder = false; RightBorder = false; TopBorder = false; BottomBorder = false; TopLeftCorner = false; TopRightCorner = false; BottomLeftCorner = false; BottomRightCorner = false; }
+```
+All of the values in the Customizer are represented there. At some point there will be a way to turn this into a preset or a JSON file.
+
+Experiment with all of the items and have a lot of fun as you do so.
+
 ## Hexagons
 
 ![Hexagon Customizer Options](Images/cust_hexagons.jpg)
 
+The values in this section control the size and other aspects of each hexagon:
+
+* HexRadius - 
+* HexHeight - 
+* ArcHeight - 
+* ArcWidth - 
+* EdgeHeight - 
+* EdgeWidth - 
+* XYLabels - 
+  
 ## Truchet
 
 ![Truchet Customizer Options](Images/cust_truchet.jpg)
+
+* TruchetMode
+* Rotate
+* RotateFactor
+* RotateMod
 
 ## Grid
 
 ![Grid Customizer Options](Images/cust_grid.jpg)
 
+* CountX
+* CountY
+* Gap
+* RandomSeed
+  
 ## Mat / Borders / Corners
 
 ![Mat Border Corner Customizer Options](Images/cust_mat_borders_corners.jpg)
 
+* Mat -
+
+* LeftBorder -
+* RightBorder -
+* TopBorder -
+* BottomBorder -
+
+* BottomLeftCorner -
+* TopLeftCorner -
+* BottomRightCorner -
+* TopRightCorner -
+
 ## Extruders
 
 ![Extruder Options](Images/cust_extruders.jpg)
+
+* TileExtruder - 
+* ArcExtruder - 
+* FillExtruder - 
+* EdgeExtruder -
+* WhichExtruder -
 
 # Creating Multi-Print Mats
 
