@@ -116,6 +116,16 @@ The values in this section control the size and other aspects of each hexagon:
 * EdgeHeight - 
 * EdgeWidth - 
 * XYLabels - 
+
+![Hexagon in Full](Images/ht_full.png)
+
+![Hexagon](Images/ht_hexagon.png)
+
+![Edge](Images/ht_edge.png)
+
+![Fill](Images/ht_fill.png)
+
+![Arc](Images/ht_arc.png)
   
 ## Truchet
 
