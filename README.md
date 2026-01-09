@@ -109,23 +109,15 @@ Experiment with all of the items and have a lot of fun as you do so.
 
 The values in this section control the size and other aspects of each hexagon:
 
-* HexRadius - 
-* HexHeight - 
-* ArcHeight - 
-* ArcWidth - 
-* EdgeHeight - 
-* EdgeWidth - 
-* XYLabels - 
+* **HexRadius** - Radius of hexagon. 
+* **HexHeight** - Height of hexagon.
+* **ArcHeight** - Height of the arcs and fill resting on top of hexagon.
+* **ArcWidth** - Width of the arcs that are adjacent to the full. 
+* **EdgeHeight** - Height of the edges around the hexagon.
+* **EdgeWidth** - Width of the edges around the hexagon.
+* **XYLabels** - If set, renders X/Y coordinates of each hexagon, used for debugging.
 
 ![Hexagon in Full](Images/ht_full.png)
-
-![Hexagon](Images/ht_hexagon.png)
-
-![Edge](Images/ht_edge.png)
-
-![Fill](Images/ht_fill.png)
-
-![Arc](Images/ht_arc.png)
   
 ## Truchet
 
