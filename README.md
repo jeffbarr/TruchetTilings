@@ -123,10 +123,10 @@ The values in this section control the size and other aspects of each hexagon:
 
 ![Truchet Customizer Options](Images/cust_truchet.jpg)
 
-* TruchetMode
-* Rotate
-* RotateFactor
-* RotateMod
+* **TruchetMode** - Controls which of the truchet tiles are used. **1**, **2**, **3**, **4**, **5**, and **6** specify individual tiles. **1-2** specifies tiles 1 and 2, and **3-4-5-6** specifies tiles 3, 4, 5, and 6. **CircledTriad** specifies the circled triad pattern.
+* **Rotate** - If set, specifies that tiles should be rotated using a formula based on **RotateFactor** and **RotateMod**. Not all tiles look different when rotated, and this does not apply to the use of **CircledTriad** or (in the future) other patterns.
+* **RotateFactor** - Drives the rotation if **Rotate** is set. See the code to learn more.
+* **RotateMod** - Also drives the rotation if **Rotate** is set. 
 
 ## Grid
 
