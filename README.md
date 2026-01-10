@@ -147,7 +147,9 @@ The values in this section control the overall size of the grid of hexagons:
 * **CountY** - Specifies the number of hexagons in the Y direction.
 * **Gap** - Specifies the gap between adjacent hexagons. This should be non-zero only if you are [printing on fabric](https://nextjeff.com/3d-printing-on-fabric-tips-and-tricks-f306f4d56833).
 * **RandomSeed** - This value is used to seed the random number generator. The values affect **TruchetMode** **1-2** and **3-4-5-6** only.
-  
+
+![Grid with Non-Zero Gap](Images/grid_spaced.png)
+
 ## Mat / Borders / Corners
 
 ![Mat Border Corner Customizer Options](Images/cust_mat_borders_corners.jpg)
