@@ -196,8 +196,28 @@ To use this feature, you design your grid as usual, then select one of the Mat v
 
 [render_hexaxgons_truchet.bat](render_hexagons_truchet.bat) in this repo simplifies the process of generating all of the STLs files neded to create a mat. It needs to be hand-edited to set the PARAM and PMAT values, and to be run in a specific directory two levels deeper than where the OpenSCAD file lives. Read the comments in the file to learn more and feel free to make this tool better.
 
+```mermaid
+flowchart LR
+    PARAM[PARAM - OpenSCAD param file]
+    PMAT[PMAT - Settings reference in PARAM]
+    O[OpenSCAD]
+    B[render_hexagons_truchet.bat]
+    OUTFILE[OUTFILE - Directory for STLs]
+    PARAM --> B
+    PMAT --> B
+    O --> B
+    B --> OUTFILE
+```
+
 # Ideas
 
 # Please Reference Me / This
+
+If you use this code to create something cool, please reference this page and tag me on social media:
+
+* [Instagram](https://www.instagram.com/jeffbarr/)
+* [Threads](https://www.threads.com/@jeffbarr)
+* [Facebook](https://www.facebook.com/jeff.s.barr)
+* [X](https://x.com/jeffbarr)
 
 # Truchet References
