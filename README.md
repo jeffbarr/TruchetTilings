@@ -190,6 +190,9 @@ This feature allows you to easily and efficiently create grids that have the pro
 
 ![Tiling Multiple Grids](Images/tiling_mats.png)
 
+To use this feature, you design your grid as usual, then select one of the Mat values, render for each extruder, and proceed as usual. This will create a lot of files and is very tedious. Fortunately, the next section describes a tool that takes care of all of the repetitive work for you.
+
+
 # Tools
 
 # Ideas
