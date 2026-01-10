@@ -168,17 +168,21 @@ The values in this section control the borders and corners around the grid of he
 * **BottomRightCorner** - Enables a corner on the bottom right if set.
 * **TopRightCorner** - Enables a corner on the top right if set.
 
+**Important Safety Tip:** The borders and corners only properly when **CountX** is odd and **CountY** is even.
+
 ![Manual Borders and Corners](Images/ht_borders_edges.gif)
 
 ## Extruders
 
+This section lets you create prints that work on multi-color / multi-filament printers. Set **WhichExtruder** to **All** while you are building your grid. Set the four other extruder values as desired (generally keeping them as 1-4 is fine). You can set **FillExtruder** and/or **EdgeExtruder** to 0 if you don't want these elements in your print.
+
 ![Extruder Options](Images/cust_extruders.jpg)
 
-* TileExtruder - 
-* ArcExtruder - 
-* FillExtruder - 
-* EdgeExtruder -
-* WhichExtruder -
+* **TileExtruder** - Sets the extruder for the hexagons. 
+* **ArcExtruder** - Sets the extruder for the arcs atop each hexagon.
+* **FillExtruder** - Sets the extruder for the area filled in between arcs. 
+* **EdgeExtruder** - Sets the extruder for the optional edge around each hexagon.
+* **WhichExtruder** - Controls which elements will be displayed and rendered. See my article, [Creating Multi-Extruder Designs in OpenSCAD for 3D Printing](https://nextjeff.com/creating-multi-extruder-designs-in-openscad-for-3d-printing-6c43a002ef64) to learn more about how this works.
 
 # Creating Multi-Print Mats
 
