@@ -154,17 +154,19 @@ The values in this section control the overall size of the grid of hexagons:
 
 ![Mat Border Corner Customizer Options](Images/cust_mat_borders_corners.jpg)
 
-* Mat -
+The values in this section control the borders and corners around the grid of hexagons. You can use the **Mat** to choose a predefined collection of settings that will make it easy for you to tile multiple grids into a large mat, or you can set it to **Manual** and control the borders and corners yourself. In most case the first option is easier and preferable. See the section below, **Creating Multi-Print Mats**, to learn more.
 
-* LeftBorder -
-* RightBorder -
-* TopBorder -
-* BottomBorder -
+* **Mat** - Either **Manual** to enable use of the border and corner controls, or a value **A** through **M** to specify a collection of border and corner settings.
 
-* BottomLeftCorner -
-* TopLeftCorner -
-* BottomRightCorner -
-* TopRightCorner -
+* **LeftBorder** - Enables a border on the left side if set.
+* **RightBorder** - Enables a border on the right side if set.
+* **TopBorder** - Enables a border on the top edge if set.
+* **BottomBorder** - Enables a border on the bottom edge if set.
+
+* **BottomLeftCorner** - Enables a corner on the bottom left if set.
+* **TopLeftCorner** - Enables a corner on the top left if set.
+* **BottomRightCorner** - Enables a corner on the bottom right if set.
+* **TopRightCorner** - Enables a corner on the top right if set.
 
 ## Extruders
 
