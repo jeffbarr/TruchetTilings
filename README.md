@@ -168,6 +168,8 @@ The values in this section control the borders and corners around the grid of he
 * **BottomRightCorner** - Enables a corner on the bottom right if set.
 * **TopRightCorner** - Enables a corner on the top right if set.
 
+![Manual Borders and Corners](Images/ht_borders_edges.gif)
+
 ## Extruders
 
 ![Extruder Options](Images/cust_extruders.jpg)
