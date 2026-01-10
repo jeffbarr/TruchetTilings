@@ -141,10 +141,12 @@ The values in this section control the size and other aspects of each hexagon:
 
 ![Grid Customizer Options](Images/cust_grid.jpg)
 
-* CountX
-* CountY
-* Gap
-* RandomSeed
+The values in this section control the overall size of the grid of hexagons:
+
+* **CountX** - Specifies the number of hexagons in the X direction.
+* **CountY** - Specifies the number of hexagons in the Y direction.
+* **Gap** - Specifies the gap between adjacent hexagons. This should be non-zero only if you are [printing on fabric](https://nextjeff.com/3d-printing-on-fabric-tips-and-tricks-f306f4d56833).
+* **RandomSeed** - This value is used to seed the random number generator. The values affect **TruchetMode** **1-2** and **3-4-5-6** only.
   
 ## Mat / Borders / Corners
 
