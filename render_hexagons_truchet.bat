@@ -19,8 +19,8 @@ REM     save as GCODE
 REM
 REM This generates up to 65 files and over 1.3 GB of STL within minutes
 REM
-REM More info:
-REM  https://docs.google.com/document/d/1lFDn3-urD4o3PvHtm6bd0SUD1x2gzSSJPIn_AOtbqk4/edit?tab=t.0
+REM More info: https://github.com/jeffbarr/TruchetTilings/blob/main/Images/tiling_mats.png
+REM  
 REM
 REM TODO:
 REM	- Accept a single parameter that maps to mat5/6/7 ...
@@ -55,4 +55,5 @@ for %%M in (A B C D E F G H I J K L M) do (
     %OSC% %EXTRA% -D "_Mat=\"%%M\"" -D "_WhichExtruder=%%E" -p %PARAM% -P %PMAT% %INFILE% -o %OUTFILE%_%%M_%%E.stl
   )
 )
+
 
