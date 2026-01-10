@@ -186,6 +186,10 @@ This section lets you create prints that work on multi-color / multi-filament pr
 
 # Creating Multi-Print Mats
 
+This feature allows you to easily and efficiently create grids that have the proper combination of borders and edges to seamlessless connect to form arbitrarily long and/or wide mats. There are 13 different settings for **Mat** (**A** through **M**):
+
+![Tiling Multiple Grids](Images/tiling_mats.png)
+
 # Tools
 
 # Ideas
