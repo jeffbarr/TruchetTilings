@@ -121,7 +121,9 @@ The values in this section control the size and other aspects of each hexagon:
 
 * **EdgeHeight** - Height of the edges around the hexagon.
 * **EdgeWidth** - Width of the edges around the hexagon.
-  
+
+![Edge with Dimensions](Images/ht_edge_dim.png)
+
 * **XYLabels** - If set, renders X/Y coordinates of each hexagon, used for debugging, and also good for developing new patterns:
 
 ![XY Labels](Images/ht_xy_labels.png)
