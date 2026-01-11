@@ -77,16 +77,16 @@
 _HexRadius = 20;
 
 // Hexagon height
-_HexHeight = 0.8;
+_HexHeight = 0.301;
 
 // Arc height
-_ArcHeight = 0.2;
+_ArcHeight = 0.15;
 
 // Arc width
 _ArcWidth = 0.20;
 
 // Edge height
-_EdgeHeight = 0.2;
+_EdgeHeight = 0.15;
 
 // Edge width
 _EdgeWidth = 0.1;
@@ -170,6 +170,17 @@ _EdgeExtruder = 0;
 
 // [Extruder to render]
 _WhichExtruder = "All"; // ["All", 1, 2, 3, 4, 5]
+
+/* [Animation] */
+
+// Animate through RotateFactor and RotateMod
+_Animate = false;
+
+// [Rotate factor max]
+_RotateFactorMax = 6;
+
+// [Rotate mod max]
+_RotateModMax = 6;
 
 // Map a value of _WhichExtruder to an OpenSCAD color
 function ExtruderColor(Extruder) = 
@@ -899,9 +910,10 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//
 
 	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX) :
-          Rotate                            ? ((X * RotateFactor * Y) % RotateMod)                                             :
-		  0;
+          Rotate                            ? ((X * RotateFactor * Y) % RotateMod)                                        :		  0;
 
+	echo(X, Y, Rotate, RotateFactor, RotateMod, "=>", Rot);
+	
 	//
 	// Decide on arc index for the hexagon:
 	//
@@ -909,7 +921,7 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloY) :
 	                                                    ArcIndex;
 														 
-	echo(Rotate,RotateFactor,RotateMod);if (!is_undef(Rot))
+	if (!is_undef(Rot))
 	{
 		rotate([0, 0, Rot * 60])
 		{
@@ -973,8 +985,16 @@ module main(Args)
 			translate([PointX, PointY, 0])
 			{
 				ArcIndex = ArcIndexes[Y * Args.CountX + X];
+			
+				// Special magic if animating	
+				T = $t * Args.RotateFactorMax * Args.RotateModMax;			
+				RotateFactor = Args.Animate ? floor(T % Args.RotateFactorMax) + 1 : Args.RotateFactor;
+				RotateMod    = Args.Animate ? floor(T / Args.RotateModMax)    + 1 : Args.RotateMod;
 				
-				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate, Args.RotateFactor, Args.RotateMod);
+				echo(RotateFactor, RotateMod);
+				
+				// Render the hexagon
+				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate, RotateFactor, RotateMod);
 			}
 		}
 	}
@@ -1102,7 +1122,10 @@ BaseArgs =
 				["RotateMod",			_RotateMod],
 				["TileExtruder",		_TileExtruder],
 				["TruchetMode", 		_TruchetMode],
-				["XYLabels",		    _XYLabels]
+				["XYLabels",		    _XYLabels],
+				["Animate",				_Animate],
+				["RotateFactorMax",		_RotateFactorMax],
+				["RotateModMax",		_RotateModMax]
 			]
 		);
 
@@ -1334,4 +1357,9 @@ MatArgs =
 	(_Mat == "M")      ? MatM_Args  :
                          NULL;
  
+if (!is_undef($t))
+{ 
+	echo("T: ", $t);
+}
+
 main(object(BaseArgs, MatArgs));
