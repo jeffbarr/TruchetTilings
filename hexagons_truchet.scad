@@ -907,7 +907,7 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//	- Default is 0 for all ArcIndexs (1-6).
 	//
 
-	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloX) :
+	Rot = TruchetModeIsPattern(TruchetMode) ? PatternRotation(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloY) :
           Rotate                            ? ((X * RotateFactor * Y) % RotateMod)                                             :
 		  0;
 
