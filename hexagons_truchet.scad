@@ -1,3 +1,12 @@
+//
+// hexagons_truchet.scad
+//
+// Jeff Barr, 2025-2026
+//
+// The master copy of this code lives at https://github.com/jeffbarr/TruchetTilings
+//
+
+//
 // Hexagons with Truchet-inspired tiles via Kerry Mitchell's article:
 //
 // "Generalizations of Truchet Tiles" 
@@ -909,7 +918,7 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	FinalArcIndex = TruchetModeIsPattern(TruchetMode) ? PatternArcIndex(TruchetMode, X % CircledTriad.ModuloX, Y % CircledTriad.ModuloY) :
 	                                                    ArcIndex;
 														 
-	echo(Rotate,RotateFactor,RotateMod);if (!is_undef(Rot))
+	if (!is_undef(Rot))
 	{
 		rotate([0, 0, Rot * 60])
 		{
@@ -1078,7 +1087,7 @@ module main(Args)
 //
 //	BaseArgs are the arguments used regardless of _Mat
 //	ManualArgs are additional arguments if Mat is set to "Manual"
-//	MatA_Args ... MatJ_Args are used if Mat is set to "A" ... "J", respectively
+//	MatA_Args ... MatM_Args are used if Mat is set to "A" ... "M", respectively
 //
 
 BaseArgs = 
