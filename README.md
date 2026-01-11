@@ -43,7 +43,7 @@ Now spend the next hour or two experimenting with the various options in the Cus
 
 # Saving, Loading, and Slicing a Grid
 
-**Important Sanity Tip**: Before you get too far into this rat-hole, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
+**Important Sanity Tip**: Before you get too far into this adventure, spend some time thinking about and implementing a naming scheme for your configurations, STL files, and GCODE files. If you are using the script below to create multiple mats to form a long and/or wide design, you will end up with 52 STL files per configuration. Good naming, and perhaps a log of your work, will be of immense value here.
 
 After you have designed the grid of your dreams, you are ready to render, save, slice, and print it. To do this you use the **WhichExtruder** item in the Customizer:
 
@@ -168,7 +168,7 @@ The values in this section control the borders and corners around the grid of he
 * **BottomRightCorner** - Enables a corner on the bottom right if set.
 * **TopRightCorner** - Enables a corner on the top right if set.
 
-**Important Safety Tip:** The borders and corners only properly when **CountX** is odd and **CountY** is even.
+**Important Safety Tip:** The borders and corners only work properly when **CountX** is odd and **CountY** is even.
 
 ![Manual Borders and Corners](Images/ht_borders_edges.gif)
 
@@ -210,6 +210,15 @@ flowchart LR
 ```
 
 # Ideas
+
+# In The Works
+
+Here's what I am working on or thinking about working on:
+
+* Fixing some bugs
+* Adding more patterns
+* Ability to create a wall around the entire print
+* Ability to leave space for embedded magnets so that mats can snap together
 
 # Please Reference Me / This
 
