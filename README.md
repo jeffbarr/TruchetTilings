@@ -230,3 +230,11 @@ If you use this code to create something cool, please reference this page and ta
 * [X](https://x.com/jeffbarr)
 
 # Truchet References
+
+Here are some places to learn more about Truchet and his tiles:
+
+* [Sébastien Truchet](https://en.wikipedia.org/wiki/S%C3%A9bastien_Truchet)
+* [Truchet Tiles](https://en.wikipedia.org/wiki/Truchet_tile)
+* [The Tiling Patterns of Sebastien Truchet and the Topology of Structural Hierarchy](https://www.jstor.org/stable/1578535?)
+* [Generalizations of Truchet Tiles](https://archive.bridgesmathart.org/2020/bridges2020-191.pdf)
+
