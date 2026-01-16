@@ -38,7 +38,7 @@
 //	is set to "Manual" then the values in [Borders] and [Corners] apply.
 //
 //	Otherwise, the value ("A" through "M" as documented in 
-//	https://github.com/jeffbarr/TruchetTilings/blob/main/tiling_mats.png
+//	https://github.com/jeffbarr/TruchetTilings/blob/main/tiling_mats.png )
 //	is used to set the borders and the corners.
 //
 //	Uses any one of three sets/types of patterns:
@@ -59,6 +59,7 @@
 //  - Rotate pattern to add variety (only has a visible effect on 2, 5, and 6).
 //
 //  - Add embedded XY labels to each hexagon, rendered using the EdgeExtruder.
+//    This is primarily for use when debugging and developing new patterns.
 //
 
 // BUGS
@@ -701,7 +702,8 @@ module RenderHexagonBase(HexPoints, HexHeight)
 	}
 }
 
-// Render the edge of the given full or partial hexagon, with the given height and width
+// Render the edge of the given full or partial hexagon, with the given height 
+// and width
 module RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight)
 {
 	linear_extrude(EdgeHeight)
@@ -731,9 +733,10 @@ module RenderHexagonLabel(X, Y, Height)
 }
 
 //
-// Render full (HexPart = HEX_ALL) or part (the other values) of a hexagon, with arcs on top as specified by ArcIndex, 
-// optional (if EdgeExtruder non-zero) inlaid edge, and optional (if XYLabel true) embedded XY coordinate label using
-// EdgeExtruder.
+// Render full (HexPart = HEX_ALL) or part (the other values) of a hexagon, 
+// with arcs on top as specified by ArcIndex, optional (if EdgeExtruder 
+// non-zero) inlaid edge, and optional (if XYLabel true) embedded XY 
+// coordinate label using EdgeExtruder.
 //
 
 module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y)
@@ -807,11 +810,13 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 		// Base with optional inlaid edge
 		if (EdgeExtruder)
 		{
-			// Render the base, subtract the edge, then render the edge into the vacated space
+			// Render the base, subtract the edge, then render the edge into 
+            // the vacated space
 			union()
 			{
 				Extruder(TileExtruder)
-				{
+				{   
+                    // Base, subtracting edge
 					difference()
 					{
 						RenderHexagonBase(HexPoints, HexHeight);
@@ -830,6 +835,7 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 				
 				Extruder(EdgeExtruder)
 				{
+                    // Edge
 					translate([0, 0, HexHeight - EdgeHeight])
 					{
 						RenderHexagonEdge(HexPoints, EdgeWidth, EdgeHeight);
@@ -869,18 +875,22 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 	}
 }
 
-
-// Figure out rotation for a pattern, X and Y must be modulo the X and Y size of the pattern.
-// TruchetMode is ignored [for now] until there's more than one pattern. Note that [0][0] and [0][1] are
-// [dx, dy] from the CircledTriadHexagons. This should be updated to use object fields.
+// Figure out rotation for a pattern, X and Y must be modulo the X and Y size
+// of the pattern. TruchetMode is ignored [for now] until there's more than 
+// one pattern. 
+//
+// Note that [0][0] and [0][1] are [dx, dy] from the CircledTriadHexagons. This 
+// should be updated to use object fields.
 
 function PatternRotation(TruchetMode, X, Y) =
 	(
  [for (HexXY = CircledTriad.Hexagons) if (HexXY[0][0] == X && HexXY[0][1] == Y) HexXY[2]] [0]
 	);
-	
-// Figure out arc index for a pattern, X and Y must be modulo the X and Y size of the pattern.
-// TruchetMode is ignored [for now] until there's more than one pattern.
+
+//	
+// Figure out arc index for a pattern, X and Y must be modulo the X and Y size 
+// of the pattern. TruchetMode is ignored [for now] until there's more than 
+// one pattern.
 //
 
 function PatternArcIndex(TruchetMode, X, Y) =
@@ -889,8 +899,8 @@ function PatternArcIndex(TruchetMode, X, Y) =
 	);
 
 //	
-// Make final decisions about hexagon rendering, then call RenderHexagon to do the actual
-// rendering.
+// Make final decisions about hexagon rendering, then call RenderHexagon
+// to do the actual rendering.
 //
 
 module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcIndex, TileExtruder, ArcExtruder, FillExtruder, EdgeExtruder, EdgeWidth, EdgeHeight, XYLabel, X, Y, Rotate, RotateMod, RotateFactor)
@@ -898,11 +908,13 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 	//
 	// Decide on rotation for the hexagon:
 	//
-	//	- For patterns, the relevant (as indexed by X and Y modulo pattern size) element of the pattern
-	//	  determines the rotation. If the rotation returned by function PatternRotation is undefined,
-	//	  then there is no hexagon in the pattern at that X, Y.
+	//	- For patterns, the relevant (as indexed by X and Y modulo pattern size)
+    //    element of the pattern determines the rotation. If the rotation 
+    //    returned by function PatternRotation is undefined then there is no 
+    //    hexagon in the pattern at that X, Y.
 	//
-	//	- If Rotate is set, a function of RotateFactor and RotateMod determines rotation.
+	//	- If Rotate is set, a function of RotateFactor and RotateMod determines 
+    //    rotation.
 	//
 	//	- Default is 0 for all ArcIndexs (1-6).
 	//
@@ -1001,7 +1013,8 @@ module main(Args)
 			AtBottomBorder = (Y == 0);
 			AtTopBorder    = (Y == (Args.CountY - 2));
 			
-			// See if we are rendering a corner and set flags appropriately
+			// See if we are rendering a corner and set flags 
+            // appropriately
 			AtTopLeftCorner     = AtLeftBorder  && AtTopBorder;
 			AtBottomLeftCorner  = AtLeftBorder  && AtBottomBorder;
 			AtTopRightCorner    = AtRightBorder && AtTopBorder;
