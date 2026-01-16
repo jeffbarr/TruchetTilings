@@ -237,4 +237,11 @@ Here are some places to learn more about Truchet and his tiles:
 * [Truchet Tiles](https://en.wikipedia.org/wiki/Truchet_tile)
 * [The Tiling Patterns of Sebastien Truchet and the Topology of Structural Hierarchy](https://www.jstor.org/stable/1578535?)
 * [Generalizations of Truchet Tiles](https://archive.bridgesmathart.org/2020/bridges2020-191.pdf)
-
+* [Regular Truchet tilings](https://peterkagey.com/blog/2021/02/regular-truchet-tilings/) - TBR
+* [Too good to be Truchet](https://chalkdustmagazine.com/features/too-good-to-be-truchet/) - TBR
+* [Truchet Tilings Revisited](https://www.semanticscholar.org/paper/Truchet-Tilings-Revisited-Krawczyk/8b37239fddfe9f9a9e6b79b5aed41113d0ff2a35) - TBR
+* [Truchet Images](https://nedbatchelder.com/blog/202208/truchet_images) - TBR
+* [Truchet Tiles: Simple Rules, Infinite Patterns](https://reindernijhoff.net/2019/10/truchet-tiles-simple-rules-infinite-patterns/) - TBR
+* [Truchet Tiles and Generalizations](http://drmathart.com/Resources/Truchet/) - TBR
+* [Exploring Truchet Tiles and Beyond](https://medium.com/@adbaysal/exploring-truchet-tiles-da61f02981a0) - TBR
+* 
