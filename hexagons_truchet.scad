@@ -52,7 +52,8 @@
 //
 //  Or:
 //
-//  CircledTriad - A triad (4) surrounded by a circle (5, in various rotations).
+//  CircledTriad	- A triad (4) surrounded by a circle (5, in various rotations).
+//	LineCircleWave	- Lines, circles, and waves made from (3) and (5).
 //
 //  Optional goodies:
 //
@@ -69,7 +70,6 @@
 
 //
 // TODO
-// - Generalize to use more than one pattern
 // - Figure out and document rules for shape of a pattern
 //   Must be rectangular
 //   Must self-repeat at all edges
@@ -105,7 +105,7 @@ _XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
-_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad"]
+_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad", "LineCircleWave"]
 
 // Rotate pattern
 _Rotate = true;
@@ -247,10 +247,43 @@ object(
 		["ModuloY",		4]
 	]
 );
+
+//
+// List of hexagons for the LineCircleWave pattern:
+//
+
+LineCircleWaveHexagonList =
+[
+	[[0, 0], 3, 0],
+	[[1, 0], 5, 0],
+	[[2, 0], 3, 0],
+	[[3, 0], 5, 0],
+	[[4, 0], 3, 0],
+	[[5, 0], 5, 0],
+	[[0, 2], 3, 0],
+	[[1, 2], 5, 0],
+	[[2, 2], 3, 0],
+	[[3, 2], 5, 0],
+	[[4, 2], 3, 0],
+	[[5, 2], 5, 0]
+];
+
+// Object representing the LineCircleWave
+
+LineCircleWavePattern =
+object(
+	[
+		["Hexagons",	LineCircleWaveHexagonList],
+		["ModuloX",		6],
+		["ModuloY",		2]
+	]
+);
 	
 // Determine if TruchetMode represents a pattern
 function TruchetModeIsPattern(Mode) =
-	(Mode == "CircledTriad") ? true : false;
+	((Mode == "CircledTriad")
+     ||
+	 (Mode == "LineCircleWave")) ? true : false;
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -880,15 +913,16 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 //
 
 function PatternForMode(TruchetMode) =
-(TruchetMode == "CircledTriad") ? CircledTriadPattern
-                                : 0;
+(TruchetMode == "CircledTriad")   ? CircledTriadPattern   :
+(TruchetMode == "LineCircleWave") ? LineCircleWavePattern 
+                                  : 0;
                                 
 // Figure out rotation for a pattern, X and Y must be modulo the X and Y size
 // of the pattern. TruchetMode is ignored [for now] until there's more than 
 // one pattern. 
 //
 // Note that [0][0] and [0][1] are [dx, dy] from the CircledTriadHexagons. This 
-// should be updated to use object fields.
+// should be updated to use objects and object fields.
 
 function PatternRotation(TruchetMode, X, Y) =
 	(
