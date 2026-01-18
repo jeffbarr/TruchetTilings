@@ -132,7 +132,7 @@ The values in this section control the size and other aspects of each hexagon:
 
 ![Truchet Customizer Options](Images/cust_truchet.jpg)
 
-* **TruchetMode** - Controls which of the truchet tiles are used. **1**, **2**, **3**, **4**, **5**, and **6** specify individual tiles. **1-2** specifies tiles 1 and 2, and **3-4-5-6** specifies tiles 3, 4, 5, and 6. **CircledTriad** specifies the circled triad pattern, **LineCircleWave** specifies the line/circle/wave pattern, and **LineZigZag*** specifies the line zigzag pattern. For modes **1-2** and **3-4-5-6**, **RandomSeed** is used to start the pseudo-random number generator. You will need to capture and retain this value if you are trying to repeat patterns that you created earlier.
+* **TruchetMode** - Controls which of the truchet tiles are used. **1**, **2**, **3**, **4**, **5**, and **6** specify individual tiles. **1-2** specifies tiles 1 and 2, and **3-4-5-6** specifies tiles 3, 4, 5, and 6. **CircledTriad** specifies the circled triad pattern, **LineCircleWave** specifies the line/circle/wave pattern, and **LineZigZag** specifies the line zigzag pattern. For modes **1-2** and **3-4-5-6**, **RandomSeed** is used to start the pseudo-random number generator. You will need to capture and retain this value if you are trying to repeat patterns that you created earlier.
 * **Rotate** - If set, specifies that tiles should be rotated using a formula based on **RotateFactor** and **RotateMod**. Not all tiles look different when rotated, and this does not apply to the use of **CircledTriad** or (in the future) other patterns.
 * **RotateFactor** - Drives the rotation if **Rotate** is set. See the code to learn more.
 * **RotateMod** - Also drives the rotation if **Rotate** is set. 
@@ -240,8 +240,8 @@ Here are some places to learn more about Truchet and his tiles:
 * [Regular Truchet tilings](https://peterkagey.com/blog/2021/02/regular-truchet-tilings/)
 * [Too good to be Truchet](https://chalkdustmagazine.com/features/too-good-to-be-truchet/)
 * [Truchet Tilings Revisited](https://www.semanticscholar.org/paper/Truchet-Tilings-Revisited-Krawczyk/8b37239fddfe9f9a9e6b79b5aed41113d0ff2a35)
-* [Truchet Images](https://nedbatchelder.com/blog/202208/truchet_images) - TBR
-* [Truchet Tiles: Simple Rules, Infinite Patterns](https://reindernijhoff.net/2019/10/truchet-tiles-simple-rules-infinite-patterns/) - TBR
-* [Truchet Tiles and Generalizations](http://drmathart.com/Resources/Truchet/) - TBR
-* [Exploring Truchet Tiles and Beyond](https://medium.com/@adbaysal/exploring-truchet-tiles-da61f02981a0) - TBR
+* [Truchet Images](https://nedbatchelder.com/blog/202208/truchet_images)
+* [Truchet Tiles: Simple Rules, Infinite Patterns](https://reindernijhoff.net/2019/10/truchet-tiles-simple-rules-infinite-patterns/)
+* [Truchet Tiles and Generalizations](http://drmathart.com/Resources/Truchet/)
+* [Exploring Truchet Tiles and Beyond](https://medium.com/@adbaysal/exploring-truchet-tiles-da61f02981a0)
 * [Infinitely Variable Tiling Patterns: From Truchet to Sol LeWitt Revisited](https://pmc.ncbi.nlm.nih.gov/articles/PMC7660392/).
