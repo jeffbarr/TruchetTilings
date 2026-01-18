@@ -54,6 +54,7 @@
 //
 //  CircledTriad	- A triad (4) surrounded by a circle (5, in various rotations).
 //	LineCircleWave	- Lines, circles, and waves made from (3) and (5).
+//	LineZigZag		- Lines and switchbacks made from (5).
 //
 //  Optional goodies:
 //
@@ -105,7 +106,7 @@ _XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
-_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad", "LineCircleWave"]
+_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad", "LineCircleWave", "LineZigZag"]
 
 // Rotate pattern
 _Rotate = true;
@@ -233,7 +234,7 @@ CircledTriadHexagonList =
 ];
 
 //
-// Object representing the CircledTriad:
+// Object representing the CircledTriad pattern:
 //
 //	Hexagons		- List of hexagons, arc indexes, and rotations
 //	ModuloX			- Modulo X, indicating repeat in X direction
@@ -268,7 +269,7 @@ LineCircleWaveHexagonList =
 	[[5, 2], 5, 0]
 ];
 
-// Object representing the LineCircleWave
+// Object representing the LineCircleWave pattern:
 
 LineCircleWavePattern =
 object(
@@ -278,12 +279,36 @@ object(
 		["ModuloY",		2]
 	]
 );
-	
+
+//
+// List of hexagons for the LineZigZag pattern:
+//
+
+LineZigZagHexagonList =
+[
+	[[0, 0], 5, 0],
+	[[1, 0], 5, 1],
+	[[2, 0], 5, 1],
+	[[3, 0], 5, 1]];
+
+// Object representing the LineZigZag pattern:
+
+LineZigZagPattern =
+object(
+	[
+		["Hexagons",	LineZigZagHexagonList],
+		["ModuloX",		2],
+		["ModuloY",		1]
+	]
+);
+
 // Determine if TruchetMode represents a pattern
 function TruchetModeIsPattern(Mode) =
 	((Mode == "CircledTriad")
      ||
-	 (Mode == "LineCircleWave")) ? true : false;
+	 (Mode == "LineCircleWave")
+	 ||
+	 (Mode == "LineZigZag")) ? true : false;
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -914,7 +939,8 @@ module RenderHexagon(HexPart, HexRadius, HexHeight, ArcHeight, ArcWidth, ArcInde
 
 function PatternForMode(TruchetMode) =
 (TruchetMode == "CircledTriad")   ? CircledTriadPattern   :
-(TruchetMode == "LineCircleWave") ? LineCircleWavePattern 
+(TruchetMode == "LineCircleWave") ? LineCircleWavePattern :
+(TruchetMode == "LineZigZag")     ? LineZigZagPattern
                                   : 0;
                                 
 // Figure out rotation for a pattern, X and Y must be modulo the X and Y size
