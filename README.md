@@ -132,7 +132,7 @@ The values in this section control the size and other aspects of each hexagon:
 
 ![Truchet Customizer Options](Images/cust_truchet.jpg)
 
-* **TruchetMode** - Controls which of the truchet tiles are used. **1**, **2**, **3**, **4**, **5**, and **6** specify individual tiles. **1-2** specifies tiles 1 and 2, and **3-4-5-6** specifies tiles 3, 4, 5, and 6. **CircledTriad** specifies the circled triad pattern, **LineCircleWave** specifies the line/circle/wave pattern, and **LineZigZag** specifies the line zigzag pattern. For modes **1-2** and **3-4-5-6**, **RandomSeed** is used to start the pseudo-random number generator. You will need to capture and retain this value if you are trying to repeat patterns that you created earlier.
+* **TruchetMode** - Controls which of the truchet tiles are used. **1**, **2**, **3**, **4**, **5**, and **6** specify individual tiles. **1-2 + RandomSeed** specifies tiles 1 and 2, and **3-4-5-6 + RandomSeed** specifies tiles 3, 4, 5, and 6. **CircledTriad** specifies the circled triad pattern, **LineCircleWave** specifies the line/circle/wave pattern, and **LineZigZag** specifies the line zigzag pattern. For modes **1-2 + RandomSeed** and **3-4-5-6**, **RandomSeed + RandomSeed** is used to start the pseudo-random number generator. You will need to capture and retain this value if you are trying to repeat patterns that you created earlier.
 * **Rotate** - If set, specifies that tiles should be rotated using a formula based on **RotateFactor** and **RotateMod**. Not all tiles look different when rotated, and this does not apply to the use of **CircledTriad** or (in the future) other patterns.
 * **RotateFactor** - Drives the rotation if **Rotate** is set. See the code to learn more.
 * **RotateMod** - Also drives the rotation if **Rotate** is set. 
@@ -146,7 +146,7 @@ The values in this section control the overall size of the grid of hexagons:
 * **CountX** - Specifies the number of hexagons in the X direction.
 * **CountY** - Specifies the number of hexagons in the Y direction.
 * **Gap** - Specifies the gap between adjacent hexagons. This should be non-zero only if you are [printing on fabric](https://nextjeff.com/3d-printing-on-fabric-tips-and-tricks-f306f4d56833).
-* **RandomSeed** - This value is used to seed the random number generator. The values affect **TruchetMode** **1-2** and **3-4-5-6** only.
+* **RandomSeed** - This value is used to seed the random number generator. The values affect **TruchetMode** **1-2 + RandomSeed** and **3-4-5-6 + RandomSeed** only.
 
 ![Grid with Non-Zero Gap](Images/grid_spaced.png)
 
