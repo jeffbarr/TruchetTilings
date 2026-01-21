@@ -31,7 +31,7 @@
 //
 //		- TileExtruder - Body of the hexagon
 //		- ArcExtruder  - Arcs on top of hexagon
-//		- FillExtruder - Fill between arcs for patterns 3, 4, 5, and 6
+//		- FillExtruder - Fill between arcs for arcs 3, 4, 5, and 6
 //		- EdgeExtruder - Inlaid edge of hexagon
 //
 //	[Mat] provides an alternate way to set up borders and corners. If it 
@@ -41,10 +41,16 @@
 //	https://github.com/jeffbarr/TruchetTilings/blob/main/tiling_mats.png )
 //	is used to set the borders and the corners.
 //
-//	Uses any one of three sets/types of patterns:
+//	Uses any one of four sets/types of patterns:
 //
-//	1-2 + RandomSeed    	- One line per hexagon side
-//	3-4-5-6 + RandomSeed	- Three lines per hexagon side
+//	1-2 + RandomSeed    	- One line per hexagon side (arcs 1 and 2), randomly chosen
+//	3-4-5-6 + RandomSeed	- Three lines per hexagon side (arcs 3, 4, 5, and 6), randomly chosen
+//
+//
+//	Or:
+//
+//	1-2 + FactorMod			- One line per hexagon side (arcs 1 and 2), chosen using Factor and Mod
+//	3-4-5-6 + FactorMod		- One line per hexagon side (arcs 3, 4, 5, and 6), chosen using Factor and Mod
 //
 //	Or:
 //
@@ -71,6 +77,7 @@
 
 //
 // TODO
+// - Clean up naming for arcs, tiles, hexagons, mats, patterns
 // - Figure out and document rules for shape of a pattern
 //   Must be rectangular
 //   Must self-repeat at all edges
@@ -106,7 +113,7 @@ _XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
-_TruchetMode = "1-2 + RandomSeed";	// ["1", "2", "3", "4", "5", "6", "1-2 + RandomSeed", "3-4-5-6 + RandomSeed", "CircledTriad", "LineCircleWave", "LineZigZag"]
+_TruchetMode = "1-2 + RandomSeed";	// ["1", "2", "3", "4", "5", "6", "1-2 + RandomSeed", "1-2 + FactorMod", "3-4-5-6 + RandomSeed", "3-4-5-6 + FactorMod", "CircledTriad", "LineCircleWave", "LineZigZag"]
 
 // Rotate pattern
 _Rotate = true;
@@ -309,6 +316,12 @@ function TruchetModeIsPattern(Mode) =
 	 (Mode == "LineCircleWave")
 	 ||
 	 (Mode == "LineZigZag")) ? true : false;
+	 
+// Determine if TruchetMode represents a FactorMod
+function TruchetModeIsFactorMod(Mode) =
+	((Mode == "1-2 + FactorMod")
+	 ||
+	 (Mode == "3-4-5-6 + FactorMod")) ? true : false;
 
 // If _WhichExtruder is "All" or is not "All" and matches the 
 // requested extruder, render the child nodes.
@@ -1021,7 +1034,9 @@ function MinForTruchetMode(Mode) =
 	(Mode == "5")                    ? 5 :
 	(Mode == "6")                    ? 6 :
 	(Mode == "1-2 + RandomSeed")     ? 1 :
+	(Mode == "1-2 + FactorMod")      ? 1 :
 	(Mode == "3-4-5-6 + RandomSeed") ? 3 :
+	(Mode == "3-4-5-6 + FactorMod")  ? 3 :
 	                                   99;
 
 function MaxForTruchetMode(Mode) =
@@ -1032,7 +1047,9 @@ function MaxForTruchetMode(Mode) =
 	(Mode == "5")                    ? 5 :
 	(Mode == "6")                    ? 6 :
 	(Mode == "1-2 + RandomSeed")     ? 2 :
+	(Mode == "1-2 + FactorMod")      ? 2 :
 	(Mode == "3-4-5-6 + RandomSeed") ? 6 :
+	(Mode == "3-4-5-6 + FactorMod")  ? 6 :
 	                      99;
 
 function GetPointX(SpaceX, X) = (SpaceX * X);
@@ -1063,7 +1080,20 @@ module main(Args)
 
 			translate([PointX, PointY, 0])
 			{
-				ArcIndex = ArcIndexes[Y * Args.CountX + X];
+				//
+				// Select arc for this hexagon:
+				//
+				// - If the mode is Factor Mod, then X, Y, RotateFactor, and RotateMod determine
+				//	 an arc in the Min, Max range.
+				//
+				// - Otherwise, the arc is based on the random list of indexes in ArcIndexes,
+				//	 indexed by X, Y.
+				//
+				
+				ArcIndex = 
+					TruchetModeIsFactorMod(Args.TruchetMode) 
+					? Min + ((((X * Args.RotateFactor * Y) % Args.RotateMod)) % (Max - Min + 1))
+					: ArcIndexes[Y * Args.CountX + X]; echo(ArcIndex);
 				
 				RenderHexagonMain(Args.TruchetMode, HEX_ALL, Args.HexRadius, Args.HexHeight, Args.ArcHeight, Args.ArcWidth, ArcIndex, Args.TileExtruder, Args.ArcExtruder, Args.FillExtruder, Args.EdgeExtruder, Args.EdgeWidth, Args.EdgeHeight, Args.XYLabels, X, Y, Args.Rotate, Args.RotateFactor, Args.RotateMod);
 			}
