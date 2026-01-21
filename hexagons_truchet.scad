@@ -43,8 +43,8 @@
 //
 //	Uses any one of three sets/types of patterns:
 //
-//	1-2			One line per hexagon side
-//	3-4-5-6		Three lines per hexagon side
+//	1-2 + RandomSeed    	- One line per hexagon side
+//	3-4-5-6 + RandomSeed	- Three lines per hexagon side
 //
 //	Or:
 //
@@ -106,7 +106,7 @@ _XYLabels = false;
 
 /* [Truchet] */
 // Truchet mode
-_TruchetMode = "1-2";	// ["1", "2", "3", "4", "5", "6", "1-2", "3-4-5-6", "CircledTriad", "LineCircleWave", "LineZigZag"]
+_TruchetMode = "1-2 + RandomSeed";	// ["1", "2", "3", "4", "5", "6", "1-2 + RandomSeed", "3-4-5-6 + RandomSeed", "CircledTriad", "LineCircleWave", "LineZigZag"]
 
 // Rotate pattern
 _Rotate = true;
@@ -1014,25 +1014,25 @@ function RandomIntsInRange(Minimum, Maximum, Count, Seed) =
     [ for (f = floats) floor(f) ];
 	
 function MinForTruchetMode(Mode) =
-	(Mode == "1")       ? 1 :
-	(Mode == "2")       ? 2 :
-	(Mode == "3")       ? 3 :
-	(Mode == "4")       ? 4 :
-	(Mode == "5")       ? 5 :
-	(Mode == "6")       ? 6 :
-	(Mode == "1-2")     ? 1 :
-	(Mode == "3-4-5-6") ? 3 :
-	                      99;
+	(Mode == "1")                    ? 1 :
+	(Mode == "2")                    ? 2 :
+	(Mode == "3")                    ? 3 :
+	(Mode == "4")                    ? 4 :
+	(Mode == "5")                    ? 5 :
+	(Mode == "6")                    ? 6 :
+	(Mode == "1-2 + RandomSeed")     ? 1 :
+	(Mode == "3-4-5-6 + RandomSeed") ? 3 :
+	                                   99;
 
 function MaxForTruchetMode(Mode) =
-	(Mode == "1")       ? 1 :
-	(Mode == "2")       ? 2 :
-	(Mode == "3")       ? 3 :
-	(Mode == "4")       ? 4 :
-	(Mode == "5")       ? 5 :
-	(Mode == "6")       ? 6 :
-	(Mode == "1-2")     ? 2 :
-	(Mode == "3-4-5-6") ? 6 :
+	(Mode == "1")                    ? 1 :
+	(Mode == "2")                    ? 2 :
+	(Mode == "3")                    ? 3 :
+	(Mode == "4")                    ? 4 :
+	(Mode == "5")                    ? 5 :
+	(Mode == "6")                    ? 6 :
+	(Mode == "1-2 + RandomSeed")     ? 2 :
+	(Mode == "3-4-5-6 + RandomSeed") ? 6 :
 	                      99;
 
 function GetPointX(SpaceX, X) = (SpaceX * X);
