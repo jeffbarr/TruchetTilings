@@ -78,10 +78,13 @@
 //
 // TODO
 // - Clean up naming for arcs, tiles, hexagons, mats, patterns
+// - Rename RotateMod and RotateFactor since used for more than just rotation
+//
 // - Figure out and document rules for shape of a pattern
 //   Must be rectangular
 //   Must self-repeat at all edges
 // - Add X/Y start params that will affect "wrap" / "mod" of patterns for mats
+//
 // - Add asserts or warnings for stuff that does not work well based on odd/even
 // - Option to embed arcs into hexagons instead of on top
 // - Arcs on half hexagons
@@ -1023,8 +1026,8 @@ module RenderHexagonMain(TruchetMode, HexPart, HexRadius, HexHeight, ArcHeight, 
 }
 
 function RandomIntsInRange(Minimum, Maximum, Count, Seed) =
-    let(floats = rands(Minimum, Maximum + 1, Count, Seed))
-    [ for (f = floats) floor(f) ];
+	let (floats = rands(0, 1, Count, Seed))
+    [ for (f = floats) floor(Minimum + f * (Maximum + 1 - Minimum)) ];
 	
 function MinForTruchetMode(Mode) =
 	(Mode == "1")                    ? 1 :
@@ -1063,7 +1066,7 @@ module main(Args)
 	Min = MinForTruchetMode(Args.TruchetMode);
 	Max = MaxForTruchetMode(Args.TruchetMode);
 	ArcIndexes = RandomIntsInRange(Min, Max, Args.CountX * Args.CountY, Args.RandomSeed);
-	
+
 	// Compute spacing in X and Y
 	SpaceX = 1.5 * (Args.HexRadius + Args.Gap);
 	SpaceY = (Args.HexRadius + Args.Gap) / 2 * sqrt(3);
